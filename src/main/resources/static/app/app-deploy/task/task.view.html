@@ -1,0 +1,106 @@
+<div class="container" style="padding-top: 20px" style="padding-bottom: 20px">
+    <div class="row">
+        <div class="col-6">
+            <h4>Backlog</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+            <div class="list-group taskIteration" role="tablist">
+                <a ng-click="vm.selectTask(task.id)" ng-repeat="task in vm.tasksData track by task.id" ng-class="task.id===vm.activeTask? 'list-group-item list-group-item-action active text-light' : 'list-group-item list-group-item-action'" >{{task.title}}</a>
+            </div>
+        </div>
+        <div class="col-8 listTasks backgroundTasks">
+            <div class="tab-content">
+                <div id="collapse-{{$index}}" role="tabpanel" ng-repeat="task in vm.tasksData track by task.id" ng-class="task.id===vm.activeTask? 'tab-pane fade show active': 'tab-pane fade'">
+                    <table class="table table-borderless">
+                        <tr>
+                            <td>Proprietar:</td>
+                            <td>{{task.user.name}} {{task.user.lastName}}</td>
+                        </tr>
+                        <tr>
+                            <td>Iteratie:</td>
+                            <td>{{task.taskIteration.startDate | date: 'dd MMM yyyy'}} - {{task.taskIteration.endDate | date: 'dd MMM yyyy'}}</td>
+                        </tr>
+                        <tr>
+                            <td>Descriere:</td>
+                            <td><textarea rows="6" readonly style="width: 100%">{{task.description}}</textarea></td>
+                        </tr>
+                    
+                        <tr>
+                            <td>Prioritate:</td>
+                            <td>{{task.priority.name}}</td>
+                        </tr>
+                        <tr>
+                            <td>Deadline:</td>
+                            <td>{{task.deadline | date: 'dd MMM yyyy'}}</td>
+                        </tr>
+                        <tr>
+                            <td>Dificultate:</td>
+                            <td>{{task.difficulty.name}}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="list-profiles" role="tabpanel">
+                        Profile
+                </div>
+                <div class="tab-pane fade" id="list-messages" role="tabpanel">
+                        Messages
+                </div>
+                <div class="tab-pane fade" id="list-settings" role="tabpanel">
+                    Settings
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Button trigger modal -->
+    <div ng-show="globals.currentUser.isManager" class="row" style="padding-top: 20px" style="padding-bottom: 20px">
+        <div class="col-6 col-sm-4">
+            <button type="submit" class="btn btn-success" ng-click="vm.saveTask(false)">Adauga</button>
+            <button type="submit" class="btn btn-danger">Sterge</button>
+            <button type="submit" class="btn btn-primary" ng-click="vm.saveTask(true)">Editeaza</button>
+        </div>
+    </div>
+    
+    <!--Comments-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-10 offset-lg-1 col-12 comment-main rounded">
+                <h5>Comentarii</h5>
+                <ul class="p-0">
+                    <li ng-repeat = "comment in vm.activeComments track by comment.id">
+                        <div class="row comment-box p-1 pt-3 pr-4">
+                            <div class="col-lg-1 col-1 user-img text-center">
+                                <div class="gavatar">{{comment.user.shortName}}</div>
+                            </div>
+                            <div class="col-lg-11 col-11 user-comment bg-light rounded pb-1">
+                                <div class="row">
+                                    <div class="col-lg-8 col-6 border-bottom pr-0">
+                                        <p class="w-100 p-2 m-0">{{comment.comment}}</p>
+                                    </div>
+                                    <div class="col-lg-4 col-6 border-bottom">
+                                        <p class="w-100 p-2 m-0"><span class="float-right"><i class="fa fa-clock-o mr-1" aria-hidden="true"></i>{{comment.hourString}}</span></p>
+                                    </div>
+                                </div> 
+                                <div class="user-comment-desc p-1 pl-2">
+                                    <p class="m-0 mr-2"><span><i class="fa fa-user comment-details" aria-hidden="true"></i></span>{{comment.user.name}} {{comment.user.lastName}}</p>                      
+                                    <p class="m-0 mr-2"><span><i class="fa fa-calendar comment-details" aria-hidden="true"></i></span>{{comment.created | date:'dd/MM/yyyy'}}</p>                      
+                                </div>    
+                            </div>
+                        </div>
+                    </li>
+                    <hr>
+                    <div class="row">
+                        <div class="col-lg-11 col-11">
+                            <input type="text" class="form-control" ng-model="vm.newComment.comment" placeholder="adauga comentarii ...">
+                        </div>
+                        <div class="col-lg-1 col-2 send-icon text-center">
+                            <a ng-click="vm.sendComment()" target="_blank"><i class="fa fa-paper-plane" aria-hidden="true"></i></a>
+                        </div>
+                    </div>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>

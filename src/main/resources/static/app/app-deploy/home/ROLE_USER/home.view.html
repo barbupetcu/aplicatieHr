@@ -1,0 +1,62 @@
+<div class="userSettings">
+    <div class="container userInfos">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card-counter info">
+                <i class="fa fa-user"></i>
+                <span class="count-numbers">{{globals.currentUser.lastName}}</span>
+                <span class="count-name">{{globals.currentUser.name}}</span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-counter primary">
+                <i class="fa fa-trophy"></i>
+                <span class="count-numbers">{{vm.currentUser.level.id}}</span>
+                <span class="count-name">Nivel</span>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card-counter danger">
+                <i class="fa fa-flash"></i>
+                <span class="count-numbers">{{vm.currentUser.perLevel}} %</span>
+                <span class="count-name">pana la urmatorul nivel</span>
+                </div>
+            </div>
+        
+            <div class="col-md-3">
+                <div class="card-counter success">
+                <i class="fa fa-database"></i>
+                <span class="count-numbers">{{vm.currentUser.totalPoints}}</span>
+                <span class="count-name">Punctaj total</span>
+                </div>
+            </div>
+        
+
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <p class="h5">
+                        Taskurile mele in lucru
+                        </p>
+                        <span class="badge badge-primary badge-pill">{{vm.countTasks}}</span>
+                    </div>
+                    <div class="list-group list-group-flush previewTasks">
+                        <div class="list-group-item list-group-item-action flex-column align-items-start" ng-repeat="task in vm.myTasks track by task.id">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">{{task.title}}</h5>
+                            </div>
+                            <p class="mb-1">Descriere: {{task.description}}</p>
+                            <small>Proprietar: {{task.user.name}} {{task.user.lastName}}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

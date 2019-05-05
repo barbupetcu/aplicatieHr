@@ -1,0 +1,112 @@
+<div class="container" style="padding-bottom: 20px">
+    <form style="padding-top:20px" name="form" role="form" ng-submit="vm.editUser()">
+        <div class="row">
+            <div class="col-6">
+                <h4>Date personale</h4>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 20px">
+            <div class="col-6">
+                <div class="form-group" ng-class="{ 'has-error': form.firstName.$dirty && form.firstName.$error.required }">
+                    <label for="firstName">Nume</label>
+                    <input type="text" name="firstName" id="firstName" class="form-control" ng-model="vm.user.perso.name" required/>
+                    <span ng-show="form.firstName.$dirty && form.firstName.$error.required" class="text-danger">Numele este obligatoriu</span>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group" ng-class="{ 'has-error': form.lastName.$dirty && form.lastName.$error.required }">
+                    <label for="lastName">Prenume</label>
+                    <input type="text" name="lastName" id="lastName" class="form-control" ng-model="vm.user.perso.lastName" required/>
+                    <span ng-show="form.lastName.$dirty && form.lastName.$error.required" class="text-danger">Prenumele este obligatoriu</span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 col-md-4">
+                <div class="form-group">
+                    <label for="phone">Telefon</label>
+                    <input type="text" name="phone" id="phone" class="form-control" ng-model="vm.user.perso.phone"/>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label for="adress">Adresa</label>
+                    <input type="text" name="adress" id="adress" placeholder="ex: Strada, numar, bloc, scara, etaj, apartament" class="form-control" ng-model="vm.user.perso.adress"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 25px">
+            <div class="col-6">
+                <h4>Date utilizator</h4>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 20px">
+            <div class="col-12 col-md-4">
+                <div class="form-group" ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username" class="form-control" ng-model="vm.user.username" required/>
+                    <span ng-show="form.username.$dirty && form.username.$error.required" class="text-danger">Utilizatorul este obligatoriu</span>
+                </div>   
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-4">
+                <div class="form-group" ng-class="{ 'has-error': form.email.$dirty && form.email.$error.required }">
+                    <label for="email">Email</label>
+                    <input type="text" name="email" id="email" class="form-control" ng-model="vm.user.perso.email" required />
+                    <span ng-show="form.email.$dirty && form.email.$error.required" class="text-danger">Emailul este obligatoriu</span>
+                </div>   
+            </div>
+        </div>
+        <div class="form-actions" style="margin-top: 20px">
+            <button type="submit" class="btn btn-success" ng-disabled="form.$invalid || vm.dataLoadingUser || vm.dataLoadingPw">Salveaza
+                <i ng-if="vm.dataLoadingUser" class="fa fa-spinner fa-spin"></i>
+            </button>
+        </div>
+    </form>
+    <form style="padding-top:40px" style="padding-bottom: 20px" name="formPw" role="form" ng-submit="vm.changePw()">
+        <div class="row">
+            <div class="col-6">
+                <h4>Schimbare parola</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6" style="margin-top: 20px">
+                <div class="form-group" ng-class="{ 'has-error': formPw.oldPassword.$dirty && formPw.oldPassword.$error.required }">
+                    <label for="oldPassword">Parola veche</label>
+                    <input type="password" name="oldPassword" id="oldPassword" class="form-control" ng-model="vm.changePassword.oldPassword" required/>
+                    <span ng-show="formPw.oldPassword.$dirty && formPw.oldPassword.$error.required" class="text-danger">Introduceti parola veche</span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group" ng-class="{ 'has-error': formPw.newPassword.$dirty && formPw.newPassword.$error.required }">
+                    <label for="newPassword">Parola noua</label>
+                    <input type="password" name="newPassword" id="newPassword" class="form-control" ng-model="vm.changePassword.newPassword" required/>
+                    <span ng-show="formPw.newPassword.$dirty && formPw.newPassword.$error.required" class="text-danger">Introduceti parola noua</span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group" ng-class="{'has-error' : (formPw.passwordConf.$error.pattern || formPw.passwordConf.$error.required) && formPw.passwordConf.$dirty}">
+                    <label for="passwordconf">Confirmare parola noua</label>
+                    <input type="password" name="passwordConf" id="passwordConf" class="form-control" ng-model="vm.virtual.passwordConf" required ng-pattern="vm.changePassword.newPassword">
+                    <span ng-show="(formPw.passwordConf.$error.pattern || formPw.passwordConf.$error.required) && formPw.passwordConf.$dirty" class="text-danger">Cele doua parole nu coincid</span>
+                </div>
+            </div>
+        </div>
+        <div class="form-actions" style="margin-top: 20px">
+            <button type="submit" class="btn btn-success" ng-disabled="formPw.$invalid || vm.dataLoadingPw || vm.dataLoadingUser">Salveaza
+                <i ng-if="vm.deleteUser" class="fa fa-spinner fa-spin"></i>
+            </button>
+            
+        </div>
+    </form>
+</div>
+
+
