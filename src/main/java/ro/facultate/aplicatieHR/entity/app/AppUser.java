@@ -20,14 +20,7 @@ import java.util.Set;
 				@UniqueConstraint(name = "APP_USER_UK", columnNames = "User_Name") })
 public class AppUser {
 	@Id
-    @GeneratedValue(
-            strategy = GenerationType.AUTO,
-            generator="native"
-    )
-    @GenericGenerator(
-            name = "native",
-            strategy = "native"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", updatable = false, nullable = false)
     private Long id;
 	
