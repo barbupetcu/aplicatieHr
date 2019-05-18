@@ -1,4 +1,4 @@
-package ro.facultate.aplicatieHR.entity;
+package ro.facultate.aplicatieHR.entity.app;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
+import ro.facultate.aplicatieHR.entity.dic.DicPerso;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

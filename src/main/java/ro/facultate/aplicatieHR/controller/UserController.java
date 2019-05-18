@@ -3,25 +3,60 @@ package ro.facultate.aplicatieHR.controller;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import ro.facultate.aplicatieHR.entity.AppRole;
-import ro.facultate.aplicatieHR.entity.AppUser;
-import ro.facultate.aplicatieHR.entity.DicPerso;
+import ro.facultate.aplicatieHR.entity.app.AppRole;
+import ro.facultate.aplicatieHR.entity.app.AppUser;
+import ro.facultate.aplicatieHR.entity.dic.DicPerso;
 import ro.facultate.aplicatieHR.security.JWTFilter;
 import ro.facultate.aplicatieHR.service.UserService;
+import ro.facultate.aplicatieHR.utils.MediaTypeUtils;
 
+import javax.servlet.ServletContext;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
 
 
 @RestController
 public class UserController {
+
+	private static final String DIRECTORY = "C:/PDF";
+	private static final String DEFAULT_FILE_NAME = "java-tutorial.pdf";
  
     @Autowired
     private UserService userService;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+	@Autowired
+	private ServletContext servletContext;
+
+	@RequestMapping("/download1")
+	public ResponseEntity<InputStreamResource> downloadFile1(
+			@RequestParam(defaultValue = DEFAULT_FILE_NAME) String fileName) throws IOException {
+
+		MediaType mediaType = MediaTypeUtils.getMediaTypeForFileName(this.servletContext, fileName);
+		System.out.println("fileName: " + fileName);
+		System.out.println("mediaType: " + mediaType);
+
+		File file = new File(DIRECTORY + "/" + fileName);
+		InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+
+		return ResponseEntity.ok()
+				// Content-Disposition
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
+				// Content-Type
+				.contentType(mediaType)
+				// Contet-Length
+				.contentLength(file.length()) //
+				.body(resource);
+	}
     
     
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
@@ -84,20 +119,20 @@ public class UserController {
     }
     
     
-//    @RequestMapping(value = "/register", method = RequestMethod.POST)
-//    public HashMap<String, Object> createUser(@RequestBody AppUser appUser) {
-//
-//    	HashMap<String, Object> response = new HashMap<String, Object>();
-//    	response.put("success", false);
-//        if (userService.findByUsername(appUser.getUsername()) != null) {
-//        	response.put("message", "Userul deja exista in baza de date");
-//        } else {
-//        	userService.saveCustomRole(appUser, "ROLE_USER");
-//
-//        	response.put("success", true);
-//        }
-//        return response;
-//    }
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public HashMap<String, Object> createUser(@RequestBody AppUser appUser) {
+
+    	HashMap<String, Object> response = new HashMap<String, Object>();
+    	response.put("success", false);
+        if (userService.findByUsername(appUser.getUsername()) != null) {
+        	response.put("message", "Userul deja exista in baza de date");
+        } else {
+        	userService.saveCustomRole(appUser, "ROLE_USER");
+
+        	response.put("success", true);
+        }
+        return response;
+    }
     
     @RequestMapping(value = "/api/user", method = RequestMethod.GET)
     public AppUser getUserData(@RequestParam Long id){
@@ -133,7 +168,7 @@ public class UserController {
     		userService.saveUser(appUser);
     		response.put("success", true);
     	}
-    	
+
     	
     	return response;
     }

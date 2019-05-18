@@ -31,7 +31,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				//resurse de logare
 				.antMatchers("/register", "/authenticate", "/login",
 						//resurse utilizate pentru pornirea aplicatiei
-						"/api/depts","/favicon.ico", "/error", "/", "/index.html", "/app/**");
+						"/favicon.ico", "/error", "/", "/index.html", "/app/**",
+						"/data");
 	}
 
 

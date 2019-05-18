@@ -1,4 +1,4 @@
-package ro.facultate.aplicatieHR.entity;
+package ro.facultate.aplicatieHR.entity.data;
 
 
 import javax.persistence.Column;

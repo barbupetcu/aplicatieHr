@@ -1,4 +1,4 @@
-package ro.facultate.aplicatieHR.entity;
+package ro.facultate.aplicatieHR.entity.app;
 
 import java.util.Set;
 

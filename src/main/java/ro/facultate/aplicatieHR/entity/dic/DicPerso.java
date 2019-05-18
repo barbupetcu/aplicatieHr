@@ -1,4 +1,4 @@
-package ro.facultate.aplicatieHR.entity;
+package ro.facultate.aplicatieHR.entity.dic;
 
 import java.time.LocalDateTime;
 
@@ -19,6 +19,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import ro.facultate.aplicatieHR.entity.app.AppUser;
+import ro.facultate.aplicatieHR.entity.data.Dept;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity

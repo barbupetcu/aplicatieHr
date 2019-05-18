@@ -1,10 +1,8 @@
-package ro.facultate.aplicatieHR.repository;
-
-import java.util.List;
+package ro.facultate.aplicatieHR.repository.dic;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import ro.facultate.aplicatieHR.entity.DicPerso;
+import ro.facultate.aplicatieHR.entity.dic.DicPerso;
 
 
 public interface DicPersoRepository extends JpaRepository<DicPerso, Long> {

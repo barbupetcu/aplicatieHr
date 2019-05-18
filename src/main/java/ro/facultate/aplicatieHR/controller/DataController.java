@@ -1,76 +1,59 @@
-package com.facultate.disertatie.controller;
+package ro.facultate.aplicatieHR.controller;
 
-import java.util.HashMap;
-import java.util.List;
-
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import ro.facultate.aplicatieHR.entity.data.Dept;
+import ro.facultate.aplicatieHR.entity.data.Posturi;
+import ro.facultate.aplicatieHR.entity.data.TipuriContracte;
+import ro.facultate.aplicatieHR.service.DataService;
 
-import com.facultate.disertatie.entity.Dept;
-import com.facultate.disertatie.entity.DicTaskIteration;
-import com.facultate.disertatie.entity.RefDifficulty;
-import com.facultate.disertatie.entity.RefPriority;
-import com.facultate.disertatie.repository.DeptRepository;
-import com.facultate.disertatie.repository.DicTaskIterationRepository;
-import com.facultate.disertatie.repository.RefDifficultyRepository;
-import com.facultate.disertatie.repository.RefPriorityRepository;
+import java.util.List;
 
 @RestController
+@RequestMapping(value = "/data")
 public class DataController{
+
+	private static final Logger logger = Logger.getLogger(DataController.class);
 	
 	@Autowired
-	private DeptRepository deptRepository;
+	private DataService dataService;
 	
-	@Autowired
-	private RefPriorityRepository refPriorityRepository;
-	
-	@Autowired
-	private RefDifficultyRepository refDifficultyRepository;
-	
-	@Autowired
-	private DicTaskIterationRepository dicTaskIterationReposiory;
-	
-	@RequestMapping(value = "/api/depts", method = RequestMethod.GET)
-	public HashMap<String, Object> getDepts(){
-		HashMap<String, Object> response = new HashMap<String, Object>();
-		response.put("success", false);
-		
-		List<Dept> depts = deptRepository.findAll();
-		
+	@RequestMapping(value = "/depts", method = RequestMethod.GET)
+	public ResponseEntity<?> getDepts(){
+		List<Dept> depts = dataService.getDeptAll();
 		if (depts != null) {
-			response.put("success", true);
-			response.put("dept", depts);
+			return ResponseEntity.ok().body(depts);
 		}
-		
-		return response;
+		logger.error("Departamentele nu fost incarcate");
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
-	
-	@RequestMapping(value = "/api/priority", method = RequestMethod.GET)
-	public List<RefPriority> getPriority(){
 
-		List<RefPriority> priority = refPriorityRepository.findAll();
-
-		return priority;
+	@RequestMapping(value = "/tipuricontracte", method = RequestMethod.GET)
+	public ResponseEntity<?> getTipuriContracte(){
+		List<TipuriContracte> tipCnt = dataService.getTipuriCntAll();
+		if (tipCnt != null) {
+			return ResponseEntity.ok().body(tipCnt);
+		}
+		logger.error("Tipurile de contracte nu au fost incarcate");
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
-	
-	@RequestMapping(value = "/api/difficulty", method = RequestMethod.GET)
-	public List<RefDifficulty> getDifficulty(){
 
-		List<RefDifficulty> difficulty = refDifficultyRepository.findAll();
-
-		return difficulty;
+	@RequestMapping(value = "/posturi/{dept}", method = RequestMethod.GET)
+	public ResponseEntity<?> getPosturi(@PathVariable("dept") Integer deptId){
+		List<Posturi> posturi = dataService.getPosturiDept(deptId);
+		if (posturi != null) {
+			return ResponseEntity.ok().body(posturi);
+		}
+		logger.error("Nu au fost gasite posturi pentru departamentul: " + deptId);
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-	
-	@RequestMapping(value = "/api/iteration", method = RequestMethod.GET)
-	public List<DicTaskIteration> getIteration(){
 
-		List<DicTaskIteration> iterations = dicTaskIterationReposiory.findAll();
-
-		return iterations;
-	}
-	
 	
 	
 }

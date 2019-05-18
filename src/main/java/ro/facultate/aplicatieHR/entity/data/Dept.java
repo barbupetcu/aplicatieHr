@@ -1,4 +1,4 @@
-package ro.facultate.aplicatieHR.entity;
+package ro.facultate.aplicatieHR.entity.data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,16 +10,16 @@ import javax.persistence.Table;
 public class Dept {
 	@Id
 	@Column(name = "id", nullable = false, updatable=false)
-	private Long deptId;
+	private Integer deptId;
 	
 	@Column(name = "nume_dept", length=30)
 	private String numeDept;
 
-	public Long getDeptId() {
+	public Integer getDeptId() {
 		return deptId;
 	}
 
-	public void setDeptId(Long deptId) {
+	public void setDeptId(Integer deptId) {
 		this.deptId = deptId;
 	}
 
