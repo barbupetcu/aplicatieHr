@@ -1,4 +1,4 @@
-<div class="userSettings">
+<div class="userSettings" ng-controller="HomeController as vm">
     <div class="container userInfos">
         <div class="row">
             <div class="col-md-3">
@@ -11,7 +11,7 @@
             <div class="col-md-3">
                 <div class="card-counter primary">
                 <i class="fa fa-trophy"></i>
-                <span class="count-numbers">{{vm.currentUser.level.id}}</span>
+                <span class="count-numbers"></span>
                 <span class="count-name">Nivel</span>
                 </div>
             </div>
@@ -19,7 +19,7 @@
             <div class="col-md-3">
                 <div class="card-counter danger">
                 <i class="fa fa-flash"></i>
-                <span class="count-numbers">{{vm.currentUser.perLevel}} %</span>
+                <span class="count-numbers"></span>
                 <span class="count-name">pana la urmatorul nivel</span>
                 </div>
             </div>
@@ -27,7 +27,7 @@
             <div class="col-md-3">
                 <div class="card-counter success">
                 <i class="fa fa-database"></i>
-                <span class="count-numbers">{{vm.currentUser.totalPoints}}</span>
+                <span class="count-numbers"></span>
                 <span class="count-name">Punctaj total</span>
                 </div>
             </div>
@@ -44,15 +44,15 @@
                         <p class="h5">
                         Taskurile mele in lucru
                         </p>
-                        <span class="badge badge-primary badge-pill">{{vm.countTasks}}</span>
+                        <span class="badge badge-primary badge-pill"></span>
                     </div>
                     <div class="list-group list-group-flush previewTasks">
-                        <div class="list-group-item list-group-item-action flex-column align-items-start" ng-repeat="task in vm.myTasks track by task.id">
+                        <div class="list-group-item list-group-item-action flex-column align-items-start">
                             <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">{{task.title}}</h5>
+                                <h5 class="mb-1"></h5>
                             </div>
-                            <p class="mb-1">Descriere: {{task.description}}</p>
-                            <small>Proprietar: {{task.user.name}} {{task.user.lastName}}</small>
+                            <p class="mb-1">Descriere: </p>
+                            <small>Proprietar: </small>
                         </div>
                     </div>
                 </div>

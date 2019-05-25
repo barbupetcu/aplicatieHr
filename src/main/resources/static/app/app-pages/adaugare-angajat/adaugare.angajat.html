@@ -1,0 +1,153 @@
+<div style="padding: 30px" ng-controller="AdaugareAngajat as vm">
+    <form name="form" role="form" ng-submit="">
+        <button class="btn btn-outline-success" type="submit"><i class="fa fa-save"></i>    Adauga angajat</button>
+        <a href="#!/" class="btn btn-outline-danger" role="button"><i class="fa fa-window-close"></i>   Anuleaza</a>
+        <a href="#!/" class="btn btn-outline-secondary" role="button"><i class="fa fa-pause"></i>   Pauza</a>
+        <div class="card">
+            <div class="card-header">
+                <div class="input-group-append">
+                    <span class="input-group-text"><i class="fa fa-user"></i></span>
+                    <span class="input-group-text">Detalii Personale</span>
+                </div>
+            </div>
+            <ul class="list-group list-group-flush" style="padding-right: 30px; padding-left: 30px">
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="sex">Sex</label>
+                            <select class="form-control" id="sex" ng-model="vm.angajat.dicPerso.sex" required>
+                                <option value="" disabled hidden selected>Alegeti sexul</option>
+                                <option value="M">Masculin</option>
+                                <option value="F">Feminin</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="dataNasterii">Data nasterii</label>
+                            <div class="input-group">
+                                <md-datepicker name="dataNasterii" id="dataNasterii" ng-model="vm.angajat.dicPerso.dataNasterii" ng-change="vm.calculateAge(vm.angajat.dicPerso.dataNasterii)" md-max-date="vm.maxBirthday" required></md-datepicker>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="varsta">Varsta</label>
+                            <div class="input-group" id="varsta" >{{vm.age}}</div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="nume">Nume</label>
+                            <input type="text" name="name" class="form-control" id="nume" ng-model="vm.angajat.dicPerso.name" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="prenume">Prenume</label>
+                            <input type="text" name="name" class="form-control" id="prenume" ng-model="vm.angajat.dicPerso.lastName" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="pseudonim">Pseudonim</label>
+                            <input type="text" name="name" class="form-control" id="pseudonim" ng-model="vm.angajat.dicPerso.pseudonim">
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="judetulNasterii">Judetul Nasterii</label>
+                            <select class="form-control" id="judetulNasterii" ng-model="vm.angajat.dicPerso.judetulNasterii" required>
+                                <option value="" disabled hidden selected>Alegeti judetul</option>
+                                <option ng-repeat="judet in vm.judete" value="{{judet.countyId}}">{{judet.countyName}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="orasulNasterii">Localitatea Nasterii</label>
+                            <select class="form-control" id="orasulNasterii" ng-model="vm.angajat.dicPerso.orasulNasterii" required>
+                                <option value="" disabled hidden selected>Alegeti localitate</option>
+                                <option ng-repeat="oras in vm.updateCity(vm.angajat.dicPerso.judetulNasterii)" value="{{oras.id}}">{{oras.cityName}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="cnp">Pseudonim</label>
+                            <input type="text" name="cnp" class="form-control" id="cnp" ng-model="vm.angajat.dicPerso.cnp" required>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="email">Email</label>
+                            <input type="text" name="email" class="form-control" id="email" ng-model="vm.angajat.dicPerso.email">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="phone">Telefon</label>
+                            <input type="text" name="phone" class="form-control" id="phone" ng-model="vm.angajat.dicPerso.phone">
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <div class="input-group-append">
+                    <span class="input-group-text"><i class="fa fa-address-card"></i></span>
+                    <span class="input-group-text">Adresa</span>
+                </div>
+            </div>
+            <ul class="list-group list-group-flush" style="padding-right: 30px; padding-left: 30px">
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="county">Judet</label>
+                            <select class="form-control" id="county" ng-model="vm.angajat.dicPerso.address.countyId" required>
+                                <option value="" disabled hidden selected>Alegeti judetul</option>
+                                <option ng-repeat="judet in vm.judete" value="{{judet.countyId}}">{{judet.countyName}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="city">Oras</label>
+                            <select class="form-control" id="city" ng-model="vm.angajat.dicPerso.address.cityId" required>
+                                <option value="" disabled hidden selected>Alegeti orasul</option>
+                                <option ng-repeat="oras in vm.updateCity(vm.angajat.dicPerso.address.countyId)" value="{{oras.id}}">{{oras.cityName}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="strada">Strada</label>
+                            <input type="text" name="strada" class="form-control" id="strada" ng-model="vm.angajat.dicPerso.address.street" required>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="streetNo">Numar Strada</label>
+                            <input type="text" name="streetNo" class="form-control" id="streetNo" ng-model="vm.angajat.dicPerso.address.streetNo" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="building">Bloc</label>
+                            <input type="text" name="building" class="form-control" id="building" ng-model="vm.angajat.dicPerso.address.building">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="entrance">Scara</label>
+                            <input type="text" name="entrance" class="form-control" id="entrance" ng-model="vm.angajat.dicPerso.address.entrance">
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="floor">Etaj</label>
+                            <input type="text" name="floor" class="form-control" id="floor" ng-model="vm.angajat.dicPerso.address.floor">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="appartment">Apartament</label>
+                            <input type="text" name="appartment" class="form-control" id="appartment" ng-model="vm.angajat.dicPerso.address.appartment">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="postalCode">Cod Postal</label>
+                            <input type="text" name="postalCode" class="form-control" id="postalCode" ng-model="vm.angajat.dicPerso.address.postalCode">
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

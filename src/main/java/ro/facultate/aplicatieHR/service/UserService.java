@@ -1,6 +1,7 @@
 package ro.facultate.aplicatieHR.service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -34,14 +35,17 @@ public class UserService {
 
         customRole.add(roleRepository.findByroleName(roleName));
         user.setRoles(customRole);
-        DicPerso appPerso = user.getPerso();
-        appPerso.setUser(user);
-
-        user.setPerso(appPerso);
-
         AppUser response = userRepository.save(user);
 
 
+    }
+
+    public DicPerso getDicPersoByMarca(Long marca){
+        return dicPersoRepository.findByMarca(marca);
+    }
+
+    public List<DicPerso> getDicPersoAll(){
+        return dicPersoRepository.findAll();
     }
     
     public void saveAllRoles(AppUser user) {
@@ -62,10 +66,13 @@ public class UserService {
     
     public AppUser editUser(AppUser appUser) {
     	AppUser temp = findById(appUser.getId());
-    	appUser.setPassword(temp.getPassword());
+        appUser.setPassword(temp.getPassword());
     	return userRepository.save(appUser);
     	
     	
+    }
+    public AppUser findByMarca(Long marca) {
+        return userRepository.findByMarca(marca);
     }
     
     public void saveUser(AppUser user) {

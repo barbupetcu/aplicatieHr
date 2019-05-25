@@ -1,0 +1,46 @@
+<div class="container" ng-controller="RegisterController as vm">
+    <div class="col-md-6 offset-md-3">
+        <div class="card">
+            <div class="card-header text-center">Inregistrare utilizator</div>
+            <ul class="list-group list-group-flush" style="padding-right: 30px; padding-left: 30px; padding-bottom: 50px">
+                <form name="form" ng-submit="vm.register(angajat.marca)" role="form">
+                    <div layout="column" layout-align="center center">
+                        <md-select placeholder="Selectati un angajat" ng-model="angajat" md-on-open="vm.loadAngajati()" style="min-width: 300px;" required>
+                            <md-option ng-value="angajat" ng-repeat="angajat in vm.registerDTO">{{angajat.name}} {{angajat.lastName}}</md-option>
+                        </md-select>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="text" name="email" id="email" ng-disabled="true" class="form-control" ng-model="angajat.email"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="marca">Marca</label>
+                        <input type="text" name="marca" id="marca" ng-disabled="true" class="form-control" ng-model="angajat.marca"/>
+                    </div>
+                    <div class="form-group" ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">
+                        <label for="username">Utilizator</label>
+                        <input type="text" name="username" id="username" class="form-control" ng-model="vm.user.username" required />
+                        <span ng-show="form.username.$dirty && form.username.$error.required" class="text-danger">Usernameul este obligatoriu</span>
+                    </div>
+                    <div class="form-group" ng-class="{ 'has-error': form.password.$dirty && form.password.$error.required }">
+                        <label for="password">Parola</label>
+                        <input type="password" name="password" id="password" class="form-control" ng-model="vm.user.password" required />
+                        <span ng-show="form.password.$dirty && form.password.$error.required" class="text-danger">Parola este obligatorie</span>
+                    </div>
+                    <div class="form-group" ng-class="{'has-error' : (form.passwordConf.$error.pattern || form.passwordConf.$error.required) && form.passwordConf.$dirty}">
+                        <label for="passwordConf">Confirmare Parola</label>
+                        <input type="password" name="passwordConf" id="passwordConf" class="form-control" ng-model="vm.virtual.passwordConf" required ng-pattern="vm.user.password" />
+                        <span ng-show="(form.passwordConf.$error.pattern || form.passwordConf.$error.required) && form.passwordConf.$dirty" class="text-danger">Cele doua parole nu coincid</span>
+                    </div>
+
+
+                    <div class="form-actions">
+                        <button type="submit" ng-disabled="form.$invalid || vm.dataLoading" class="btn btn-primary">Register</button>
+                        <i ng-if="vm.dataLoading" class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+                        <a href="#!/login" class="btn btn-link">Cancel</a>
+                    </div>
+                </form>
+            </ul>
+        </div>
+    </div>
+</div>

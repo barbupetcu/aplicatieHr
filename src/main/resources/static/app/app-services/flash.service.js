@@ -5,8 +5,8 @@
         .module('app')
         .factory('FlashService', FlashService);
 
-    FlashService.$inject = ['$rootScope'];
-    function FlashService($rootScope) {
+    FlashService.$inject = ['$rootScope', '$timeout'];
+    function FlashService($rootScope, $timeout) {
         var service = {};
 
         service.Success = Success;
@@ -34,12 +34,17 @@
             }
         }
 
+        function clearMessageTimeout(){
+            delete $rootScope.flash;
+        }
+
         function Success(message, keepAfterLocationChange) {
             $rootScope.flash = {
                 message: message,
                 type: 'success', 
                 keepAfterLocationChange: keepAfterLocationChange
             };
+            $timeout(clearMessageTimeout, 4000);
         }
 
         function Error(message, keepAfterLocationChange) {
@@ -48,6 +53,7 @@
                 type: 'error',
                 keepAfterLocationChange: keepAfterLocationChange
             };
+            $timeout(clearMessageTimeout, 4000);
         }
     }
 

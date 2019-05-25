@@ -3,14 +3,14 @@
 <head>
     <meta charset="utf-8" />
     <title>Human Resources</title>
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css"/>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.18/angular-material.min.css"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="app/app-content/app.css"/>
 
 </head>
 <body>
-    <div class="jumbotron" id="jumbo">        
+    <div class="jumbotron" id="jumbo">
         <div class="container-fluid">
             <div ng-if="isRestrictedPage" ng-include src="'app/include/header.html'"></div>
             <div ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }" ng-if="flash" ng-bind="flash.message"></div>
@@ -38,7 +38,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-cookies.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-sanitize.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.18/angular-material.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment-with-locales.min.js"></script>
 
@@ -48,20 +48,16 @@
     <script type="text/javascript" src="app/app-services/flash.service.js"></script>
     <script type="text/javascript" src="app/app-services/ui-bootstrap-tpls-2.5.0.js"></script>
     <script type="text/javascript" src="app/app-services/user.service.js"></script>
-    <script type="text/javascript" src="app/app-services/data.service.js"></script>
     <script type="text/javascript" src="app/app-services/underscore.service.js"></script>
    
     <!--Controller-->
-    <script type="text/javascript" src="app/login/login.controller.js"></script>
-    <script type="text/javascript" src="app/register/register.controller.js"></script>
-    <script type="text/javascript" src="app/app-controller/home.controller.js"></script>
-    <script type="text/javascript" src="app/app-controller/editUser.controller.js"></script>
-    <script type="text/javascript" src="app/app-controller/homeMan.controller.js"></script>
-    <script type="text/javascript" src="app/app-controller/aproveUser.controller.js"></script>
-    <script type="text/javascript" src="app/app-controller/task.controller.js"></script>
-    <script type="text/javascript" src="app/app-controller/task.adaugare.js"></script>
-    <script type="text/javascript" src="app/app-controller/task.iteration.controller.js"></script>
-    <script type="text/javascript" src="app/app-controller/iteration.adaugare.js"></script>
+    <script type="text/javascript" src="app/app-pages/login/login.controller.js"></script>
+    <script type="text/javascript" src="app/app-pages/register/register.controller.js"></script>
+    <script type="text/javascript" src="app/app-pages/home/home.controller.js"></script>
+    <script type="text/javascript" src="app/app-pages/users/edit-user/editUser.controller.js"></script>
+    <script type="text/javascript" src="app/app-pages/adaugare-angajat/adaugare.angajat.controller.js"></script>
+
+
     
 </body>
 </html>

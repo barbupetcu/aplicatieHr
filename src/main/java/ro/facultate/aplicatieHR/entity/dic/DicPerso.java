@@ -1,58 +1,57 @@
 package ro.facultate.aplicatieHR.entity.dic;
 
-import java.time.LocalDateTime;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import ro.facultate.aplicatieHR.entity.app.AppUser;
-import ro.facultate.aplicatieHR.entity.data.Dept;
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Date;
 
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Table(name = "DIC_PERSO")
 public class DicPerso {
 	@Id
-	@Column(name = "user_id")
-    private Long id;
+	@Column(name = "marca")
+    private Long marca;
 	
-	@Column(name = "nume")
+	@Column(name = "nume", nullable = false)
 	private String name;
 	
-	@Column(name = "prenume")	
+	@Column(name = "prenume", nullable = false)
 	private String lastName;
+
+	@Column(name = "sex", nullable = false)
+	private String sex;
+
+	@Column(name = "data_nasterii", nullable = false)
+	private Date dataNasterii;
+
+	@Column(name = "cnp", nullable = false)
+	private Long cnp;
+
+	@Column(name = "judetul_nasterii", nullable = false)
+	private Integer judetulNasterii;
+
+	@Column(name = "orasul_nasterii", nullable = false)
+	private Integer orasulNasterii;
 	
 	@Column(name = "email")
 	private String email;
-	
-	@Column(name = "adress")
-	private String adress;
-	
+
 	@Column(name = "phone")
 	private String phone;
-	
-	@Formula(value="substr(nume, 1,1)||substr(prenume, 1,1)")
-	private String shortName;
-	
-	@JsonProperty("dept")
-	@ManyToOne
-	@JoinColumn(name="dept", nullable=false)
-	private Dept dept;
-	
+
+	@Column(name = "pseudonim")
+	private String pseudonim;
+
+	@JsonProperty("address")
+	@OneToOne(fetch = FetchType.LAZY, cascade= CascadeType.ALL)
+	@JoinColumn(name="address")
+	private DicAdresa address;
+
 	@JsonIgnore
     @Column(name="created", updatable=false)
 	@CreationTimestamp
@@ -62,26 +61,13 @@ public class DicPerso {
 	@Column(name="modified")
 	@UpdateTimestamp
 	private LocalDateTime updateDateTime;
-    
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @MapsId
-    private AppUser user;
-    
-	public String getShortName() {
-		return shortName;
+
+	public Long getMarca() {
+		return marca;
 	}
 
-	public void setShortName(String shortName) {
-		this.shortName = shortName;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
+	public void setMarca(Long id) {
+		this.marca = id;
 	}
 
 	public String getName() {
@@ -116,38 +102,6 @@ public class DicPerso {
 		this.updateDateTime = updateDateTime;
 	}
 
-	public AppUser getUser() {
-		return user;
-	}
-
-	public void setUser(AppUser user) {
-		this.user = user;
-	}
-	
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public Dept getDept() {
-		return dept;
-	}
-
-	public void setDept(Dept dept) {
-		this.dept = dept;
-	}
-
-	public String getAdress() {
-		return adress;
-	}
-
-	public void setAdress(String adress) {
-		this.adress = adress;
-	}
-
 	public String getPhone() {
 		return phone;
 	}
@@ -156,4 +110,67 @@ public class DicPerso {
 		this.phone = phone;
 	}
 
+	public String getSex() {
+		return sex;
+	}
+
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+
+	public Date getDataNasterii() {
+		return dataNasterii;
+	}
+
+	public void setDataNasterii(Date dataNasterii) {
+		this.dataNasterii = dataNasterii;
+	}
+
+	public Long getCnp() {
+		return cnp;
+	}
+
+	public void setCnp(Long cnp) {
+		this.cnp = cnp;
+	}
+
+	public Integer getJudetulNasterii() {
+		return judetulNasterii;
+	}
+
+	public void setJudetulNasterii(Integer judetulNasterii) {
+		this.judetulNasterii = judetulNasterii;
+	}
+
+	public Integer getOrasulNasterii() {
+		return orasulNasterii;
+	}
+
+	public void setOrasulNasterii(Integer orasulNasterii) {
+		this.orasulNasterii = orasulNasterii;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public DicAdresa getAddress() {
+		return address;
+	}
+
+	public void setAddress(DicAdresa address) {
+		this.address = address;
+	}
+
+	public String getPseudonim() {
+		return pseudonim;
+	}
+
+	public void setPseudonim(String pseudonim) {
+		this.pseudonim = pseudonim;
+	}
 }

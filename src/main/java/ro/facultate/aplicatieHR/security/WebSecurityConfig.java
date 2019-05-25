@@ -29,10 +29,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		web.ignoring()
 				//resurse de logare
-				.antMatchers("/register", "/authenticate", "/login",
+				.antMatchers("/user/**",
 						//resurse utilizate pentru pornirea aplicatiei
 						"/favicon.ico", "/error", "/", "/index.html", "/app/**",
-						"/data");
+						"/data/**");
 	}
 
 

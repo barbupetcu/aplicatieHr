@@ -18,7 +18,7 @@
         function Login(username, password, callback) {
 
         	$http({
-                url: '/authenticate',
+                url: '/user/authenticate',
                 method: "POST",
                 params: {
                     username: username,
@@ -32,21 +32,13 @@
 
         function SetCredentials(response) {
 
-            var isManager = false;
-            if (response.roles.indexOf("ROLE_MANAGER")>=0){
-                isManager = true;
-            }
-
             $rootScope.globals = {
                 currentUser: {
                     username: response.username,
                     authdata: response.token,
                     name: response.name,
                     lastName: response.lastName,
-                    dept: response.dept,
-                    id: response.id,
-                    roles: response.roles,
-                    isManager: isManager
+                    marca: response.marca,
                 }
             };
  

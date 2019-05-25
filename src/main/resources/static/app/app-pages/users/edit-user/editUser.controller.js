@@ -20,10 +20,10 @@
         }
         
         function loadCurrentUser() {
-            UserService.GetUserById($rootScope.globals.currentUser.id)
+            UserService.GetUserById($rootScope.globals.currentUser.marca)
             .then(function (response) {
-                if (response) {
-                    vm.user=response;
+                if (response.success) {
+                    vm.user=response.data;
                 } else {
                     FlashService.Error(response.message);
                 }
@@ -35,7 +35,7 @@
             UserService.EditUser(vm.user)
             .then(function (response) {
                 if (response.success) {
-                    FlashService.Success('Datele au fost inregistrate, va rugam sa va logati din nou', true);
+                    FlashService.Success(response.data, true);
                     $location.path('/login');
                 } else {
                     FlashService.Error(response.message);
@@ -46,7 +46,7 @@
 
         function changePw(){
             vm.dataLoadingPw=true;
-            UserService.ChangePassword($rootScope.globals.currentUser.id, vm.changePassword.oldPassword, vm.changePassword.newPassword)
+            UserService.ChangePassword($rootScope.globals.currentUser.marca, vm.changePassword.oldPassword, vm.changePassword.newPassword)
             .then(function (response) {
                 if (response.success) {
                     FlashService.Success('Parola a fost inregistrata, va rugam sa va logati din nou', true);

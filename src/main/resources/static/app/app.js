@@ -12,64 +12,39 @@
          * @param date {Date}
          * @returns {string} string representation of the provided date
          */
+        $mdDateLocaleProvider.months =['Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie',
+            'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie'];
+        $mdDateLocaleProvider.shortMonths =['Ian', 'Feb', 'Mar', 'Apr', 'Mai', 'Iun',
+            'Iul', 'Aug', 'Sep', 'Oct', 'Noi', 'Dec'];
+        $mdDateLocaleProvider.days = ['Luni', 'Marti', 'Miercuri', 'Joi', 'Vineri', 'Sambata', 'Duminica'];
+        $mdDateLocaleProvider.days = ['Lu', 'Ma', 'Mi', 'Joi', 'Vi', 'Sam', 'Dum'];
+        $mdDateLocaleProvider.firstDayOfWeek = 1;
+
         $mdDateLocaleProvider.formatDate = function(date) {
-            return date ? moment(date).format('DD MMM YYYY') : '';
+            return date ? moment(date).format('DD/MM/YYYY') : '';
         };
 
+        $mdDateLocaleProvider.parseDate = function(dateString) {
+            var m = moment(dateString, 'DD/MM/YYYY', true);
+            return m.isValid() ? m.toDate() : new Date(NaN);
+        };
+        var path = 'app/app-pages/';
         $routeProvider
-            .when('/', {
-                controller: 'HomeController',
-                templateUrl: 'app/app-deploy/home/ROLE_USER/home.view.html',
-                controllerAs: 'vm'
-            })
-            .when('/homeManager', {
-                controller: 'HomeControllerMan',
-                templateUrl: 'app/app-deploy/home/ROLE_MANAGER/home.view.html',
-                controllerAs: 'vm'
-            })
-
-            .when('/editUser', {
-                controller: 'EditUserController',
-                templateUrl: 'app/app-deploy/users/editUser.view.html',
-                controllerAs: 'vm'
-            })
-
-            .when('/approveUser', {
-                controller: 'AproveUserController',
-                templateUrl: 'app/app-deploy/users/approveUser.view.html',
-                controllerAs: 'vm'
-            })
-
-            .when('/task', {
-                controller: 'TaskController',
-                templateUrl: 'app/app-deploy/task/task.view.html',
-                controllerAs: 'vm'
-            })
-
-            .when('/taskIteration', {
-                controller: 'IterationController',
-                templateUrl: 'app/app-deploy/task/taskIteration.view.html',
-                controllerAs: 'vm'
-            })
-
-            .when('/descTask', {
-                templateUrl: 'app/app-deploy/task/descTask.view.html'
-            })
-
-            .when('/descTask2', {
-                templateUrl: 'app/app-deploy/task/descTask2.view.html'
-            })
-
             .when('/login', {
-                controller: 'LoginController',
-                templateUrl: 'app/login/login.view.html',
-                controllerAs: 'vm'
+                templateUrl: path + 'login/login.view.html',
             })
 
             .when('/register', {
-                controller: 'RegisterController',
-                templateUrl: 'app/register/register.view.html',
-                controllerAs: 'vm'
+                templateUrl: path + 'register/register.view.html',
+            })
+            .when('/', {
+                templateUrl: path + 'home/home.view.html',
+            })
+            .when('/editUser', {
+                templateUrl: path + 'users/edit-user/editUser.view.html',
+            })
+            .when('/adaugareAngajat', {
+                templateUrl: path + 'adaugare-angajat/adaugare.angajat.html',
             })
 
             .otherwise({ redirectTo: '/login' });
@@ -99,13 +74,6 @@
                 $rootScope.globals.currentUser ={};
             }
 
-            //ne redirectioneaza catre home-ul specific fiecarui tip de utilizator
-            if(!restrictedPage && $rootScope.globals.currentUser.roles!= undefined){
-                if ($rootScope.globals.currentUser.roles.indexOf("ROLE_MANAGER")>=0 && $location.path()==="/"){
-                    $location.path('/homeManager');
-                }
-            }
-            
             //flagul evidentierea meniului activ
             $rootScope.isActiveNavBar = function (viewLocation) {
                 var active = (viewLocation === $location.path());

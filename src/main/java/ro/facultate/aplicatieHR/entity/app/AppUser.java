@@ -13,11 +13,12 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+
 @Entity
 @Table(name = "App_User", //
 		uniqueConstraints = { //
-				@UniqueConstraint(name = "APP_USER_UK", columnNames = "User_Name") })
+				@UniqueConstraint(name = "APP_USER_UK", columnNames = "User_Name"),
+        @UniqueConstraint(name = "APP_USER_MARCA", columnNames = "Marca")})
 public class AppUser {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +34,9 @@ public class AppUser {
     
     @Column(name = "Enabled", length = 1, nullable = false)
     private boolean enabled;
+
+    @Column(name = "Marca", nullable = false)
+    private Long marca;
     
     @JsonIgnore
     @Column(name="created", updatable=false)
@@ -48,10 +52,6 @@ public class AppUser {
     @ManyToMany
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<AppRole> roles;
-
-    @JsonProperty(value="perso")
-    @OneToOne(fetch = FetchType.LAZY, mappedBy="user", cascade=CascadeType.ALL)
-    private DicPerso perso;
 
 	public Long getId() {
         return id;
@@ -85,7 +85,15 @@ public class AppUser {
 		this.enabled = enabled;
 	}
 
-	public LocalDateTime getCreateDateTime() {
+    public Long getMarca() {
+        return marca;
+    }
+
+    public void setMarca(Long marca) {
+        this.marca = marca;
+    }
+
+    public LocalDateTime getCreateDateTime() {
 		return createDateTime;
 	}
 
@@ -110,11 +118,4 @@ public class AppUser {
         this.roles = roles;
     }
 
-    public DicPerso getPerso() {
-        return perso;
-    }
-
-    public void setPerso(DicPerso perso) {
-        this.perso = perso;
-    }
 }

@@ -1,176 +1,156 @@
 package ro.facultate.aplicatieHR.controller;
 
+import com.google.gson.Gson;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import ro.facultate.aplicatieHR.dto.AngajatiRegisterDTO;
+import ro.facultate.aplicatieHR.dto.RegisterDTO;
 import ro.facultate.aplicatieHR.entity.app.AppRole;
 import ro.facultate.aplicatieHR.entity.app.AppUser;
 import ro.facultate.aplicatieHR.entity.dic.DicPerso;
 import ro.facultate.aplicatieHR.security.JWTFilter;
 import ro.facultate.aplicatieHR.service.UserService;
-import ro.facultate.aplicatieHR.utils.MediaTypeUtils;
 
-import javax.servlet.ServletContext;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.*;
 
 
 @RestController
+@RequestMapping(value = "/user")
 public class UserController {
 
-	private static final String DIRECTORY = "C:/PDF";
-	private static final String DEFAULT_FILE_NAME = "java-tutorial.pdf";
- 
     @Autowired
     private UserService userService;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+	private ModelMapper modelMapper;
 
-	@Autowired
-	private ServletContext servletContext;
+    @Autowired
+	private Gson gson;
 
-	@RequestMapping("/download1")
-	public ResponseEntity<InputStreamResource> downloadFile1(
-			@RequestParam(defaultValue = DEFAULT_FILE_NAME) String fileName) throws IOException {
+    @RequestMapping(value = "/loadAngajati", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity downloadFile1()  {
+		List<DicPerso> angajati = userService.getDicPersoAll();
 
-		MediaType mediaType = MediaTypeUtils.getMediaTypeForFileName(this.servletContext, fileName);
-		System.out.println("fileName: " + fileName);
-		System.out.println("mediaType: " + mediaType);
+		Type listType = new TypeToken<List<AngajatiRegisterDTO>>(){}.getType();
 
-		File file = new File(DIRECTORY + "/" + fileName);
-		InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+		List<AngajatiRegisterDTO> ang = modelMapper.map(angajati, listType);
 
-		return ResponseEntity.ok()
-				// Content-Disposition
-				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
-				// Content-Type
-				.contentType(mediaType)
-				// Contet-Length
-				.contentLength(file.length()) //
-				.body(resource);
+		if(!ang.isEmpty()){
+			return ResponseEntity.ok().body(ang);
+
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(gson.toJson("Lista de angajati nu poate fi incarcata"));
+
 	}
-    
+
     
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public HashMap<String, Object> checkLogin(@RequestParam String username, @RequestParam String password) throws IOException {
     	String token = null;
         AppUser appUser = userService.findByUsername(username);
-    	
     	HashMap<String, Object> tokenMap = new HashMap<String, Object>();
-    	
     	List<String> roles = new ArrayList<String>();
-    	
-    	
-    	
     	if (appUser != null && bCryptPasswordEncoder.matches(password, appUser.getPassword())) {
     		if (appUser.isEnabled()) {
     			
     			for (AppRole appRole : appUser.getRoles()) {
     	    		roles.add(appRole.getRoleName());
     	    	}
-    			
     			token = Jwts.builder().setSubject(username).claim(JWTFilter.AUTHORITIES_KEY, roles).setIssuedAt(new Date())
 	                    .signWith(SignatureAlgorithm.HS256, JWTFilter.TOKEN_KEY).compact();
 	            tokenMap.put("token", token);
 	            tokenMap.put("success", true);
-	            
-	            
-	            DicPerso appPerso = appUser.getPerso();
-	            
+	            DicPerso appPerso = userService.getDicPersoByMarca(appUser.getMarca());
 	            //adaugam in raspuns elementele care vor fi stocate permanent in partea de client
 	            tokenMap.put("username", appUser.getUsername());
 	            tokenMap.put("name", appPerso.getName());
 	            tokenMap.put("lastName", appPerso.getLastName());
-	            tokenMap.put("dept", appPerso.getDept().getDeptId());
-	            tokenMap.put("id", appUser.getId());
-	            
-	            Set<String> rolesText = new HashSet<String>();
-	            
-	            Set<AppRole> appRoles = appUser.getRoles();
-	            
-	            for (AppRole appRole : appRoles) {
-	            	rolesText.add(appRole.getRoleName());
-	            }
-	            
-	            tokenMap.put("roles", rolesText);
-	            
-
+				tokenMap.put("marca", appUser.getMarca());
     		}
     		else {
     			tokenMap.put("message", "Contul nu este inca activat.");
     		}
-
         } else {
             tokenMap.put("message", "Credentialele introduse nu sunt corecte!");
-  
         }
-    	
     	return tokenMap;
         
-       
     }
     
     
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public HashMap<String, Object> createUser(@RequestBody AppUser appUser) {
+    public ResponseEntity createUser(@RequestBody RegisterDTO registerDTO) {
 
-    	HashMap<String, Object> response = new HashMap<String, Object>();
-    	response.put("success", false);
-        if (userService.findByUsername(appUser.getUsername()) != null) {
-        	response.put("message", "Userul deja exista in baza de date");
+
+        if (userService.findByUsername(registerDTO.getUsername()) != null ||
+				userService.findByMarca(registerDTO.getMarca()) != null) {
+        	return	ResponseEntity
+					.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(gson.toJson("Utilizatorul deja exista"));
         } else {
+			AppUser appUser = modelMapper.map(registerDTO, AppUser.class);
         	userService.saveCustomRole(appUser, "ROLE_USER");
 
-        	response.put("success", true);
+        	return ResponseEntity
+					.status(HttpStatus.OK).body(gson.toJson("Utilizatorul a fost creat"));
         }
-        return response;
     }
     
-    @RequestMapping(value = "/api/user", method = RequestMethod.GET)
-    public AppUser getUserData(@RequestParam Long id){
-    	  	   
-    	
-    	AppUser appUser= userService.findById(id);
-    	
-    	return appUser;
+    @RequestMapping(value = "/getUser/{id}", method = RequestMethod.GET)
+    public ResponseEntity getUserData(@PathVariable("id") String id){
+
+    	try{
+			Long idLong = Long.parseLong(id);
+
+			AppUser appUser= userService.findByMarca(idLong);
+
+			return ResponseEntity.ok().body(appUser);
+		}
+    	catch (Exception e){
+    		return ResponseEntity
+					.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(gson.toJson("Eroare la preluarea detaliilor userului"));
+		}
     }
     
-    @RequestMapping(value = "/api/editUser", method = RequestMethod.PUT)
-    public HashMap<String, Object> editUser(@RequestBody AppUser user) {
-    	HashMap<String, Object> response = new HashMap<String, Object>();
-    	response.put("success", false);
-    	if(userService.editUser(user)!=null) {
-    		response.put("success", true);
+    @RequestMapping(value = "/editUser", method = RequestMethod.PUT)
+    public ResponseEntity editUser(@RequestBody AppUser user) {
+    	try{
+			userService.editUser(user);
+			return ResponseEntity.ok(gson.toJson("Utilizatorul a fost modificat"));
+		}
+    	catch (Exception e){
+    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(gson.toJson("Utilizatorul nu a putut fi modificat"));
     	}
-    	else {
-    		response.put("message", "Datele utilizatorului nu au putut fi salvate");
-    	}
-    	return response;
     }
     
-    @RequestMapping(value = "/api/changepassword", method = RequestMethod.PUT)
-    public HashMap<String, Object> changePw(@RequestParam Long id, @RequestParam String oldPw, @RequestParam String newPw) {
-    	HashMap<String, Object> response = new HashMap<String, Object>();
-    	
-    	response.put("success", false);
-    	AppUser appUser = userService.findById(id);  	
+    @RequestMapping(value = "/changepassword", method = RequestMethod.PUT)
+    public ResponseEntity changePw(@RequestParam Long id, @RequestParam String oldPw, @RequestParam String newPw) {
+
+    	AppUser appUser = userService.findByMarca(id);
     	
     	if (appUser != null && bCryptPasswordEncoder.matches(oldPw, appUser.getPassword())) {
     		appUser.setPassword(bCryptPasswordEncoder.encode(newPw));
     		userService.saveUser(appUser);
-    		response.put("success", true);
+    		return ResponseEntity
+					.status(HttpStatus.OK)
+					.body(gson.toJson("Parola a fost modificata"));
     	}
 
-    	
-    	return response;
+		return ResponseEntity
+				.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body(gson.toJson("Parola nu a putut fi schimbata"));
     }
     
 //    @RequestMapping(value = "/api/disabledUsers", method = RequestMethod.GET)

@@ -1,0 +1,75 @@
+<div class="container" style="padding-bottom: 20px" ng-controller="EditUserController as vm">
+    <form style="padding-top:20px" name="form" role="form" ng-submit="vm.editUser()">
+        <div class="card">
+            <div class="card-header">
+                <div class="input-group-append">
+                    <span class="input-group-text"><i class="fa fa-user" aria-hidden="true"></i></span>
+                    <span class="input-group-text">Schimbare username</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="form-group" ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">
+                            <label for="username">Username</label>
+                            <input type="text" name="username" id="username" class="form-control" ng-model="vm.user.username" required/>
+                            <span ng-show="form.username.$dirty && form.username.$error.required" class="text-danger">Utilizatorul este obligatoriu</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions" style="margin-top: 20px">
+                    <button type="submit" class="btn btn-success" ng-disabled="form.$invalid || vm.dataLoadingUser || vm.dataLoadingPw">Schimba utilizatorul
+                        <i ng-if="vm.dataLoadingUser" class="fa fa-spinner fa-spin"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <form style="padding-top:40px" style="padding-bottom: 20px" name="formPw" role="form" ng-submit="vm.changePw()">
+        <div class="card">
+            <div class="card-header">
+                <div class="input-group-append">
+                    <span class="input-group-text"><i class="fa fa-key" aria-hidden="true"></i></span>
+                    <span class="input-group-text">Schimbare parola</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="form-group" ng-class="{ 'has-error': formPw.oldPassword.$dirty && formPw.oldPassword.$error.required }">
+                            <label for="oldPassword">Parola veche</label>
+                            <input type="password" name="oldPassword" id="oldPassword" class="form-control" ng-model="vm.changePassword.oldPassword" required/>
+                            <span ng-show="formPw.oldPassword.$dirty && formPw.oldPassword.$error.required" class="text-danger">Introduceti parola veche</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="form-group" ng-class="{ 'has-error': formPw.newPassword.$dirty && formPw.newPassword.$error.required }">
+                            <label for="newPassword">Parola noua</label>
+                            <input type="password" name="newPassword" id="newPassword" class="form-control" ng-model="vm.changePassword.newPassword" required/>
+                            <span ng-show="formPw.newPassword.$dirty && formPw.newPassword.$error.required" class="text-danger">Introduceti parola noua</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="form-group" ng-class="{'has-error' : (formPw.passwordConf.$error.pattern || formPw.passwordConf.$error.required) && formPw.passwordConf.$dirty}">
+                            <label for="passwordconf">Confirmare parola noua</label>
+                            <input type="password" name="passwordConf" id="passwordConf" class="form-control" ng-model="vm.virtual.passwordConf" required ng-pattern="vm.changePassword.newPassword">
+                            <span ng-show="(formPw.passwordConf.$error.pattern || formPw.passwordConf.$error.required) && formPw.passwordConf.$dirty" class="text-danger">Cele doua parole nu coincid</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions" style="margin-top: 20px">
+                    <button type="submit" class="btn btn-success" ng-disabled="formPw.$invalid || vm.dataLoadingPw || vm.dataLoadingUser">Schimba parola
+                        <i ng-if="vm.deleteUser" class="fa fa-spinner fa-spin"></i>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+

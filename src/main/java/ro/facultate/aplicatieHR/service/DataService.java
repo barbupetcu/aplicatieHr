@@ -5,8 +5,11 @@ import org.springframework.stereotype.Service;
 import ro.facultate.aplicatieHR.entity.data.Dept;
 import ro.facultate.aplicatieHR.entity.data.Posturi;
 import ro.facultate.aplicatieHR.entity.data.TipuriContracte;
+import ro.facultate.aplicatieHR.projection.Judete;
+import ro.facultate.aplicatieHR.projection.Orase;
 import ro.facultate.aplicatieHR.repository.data.DeptRepository;
 import ro.facultate.aplicatieHR.repository.data.PosturiRepository;
+import ro.facultate.aplicatieHR.repository.data.SirutaRepository;
 import ro.facultate.aplicatieHR.repository.data.TipuriContracteRepository;
 
 import java.util.List;
@@ -20,6 +23,8 @@ public class DataService {
     PosturiRepository posturiRepository;
     @Autowired
     TipuriContracteRepository tipuriContracteRepository;
+    @Autowired
+    SirutaRepository sirutaRepository;
 
     public List<Dept> getDeptAll(){
         return deptRepository.findAll();
@@ -47,5 +52,13 @@ public class DataService {
 
     public TipuriContracte getTipCnt(String code){
         return   tipuriContracteRepository.getOne(code);
+    }
+
+    public List<Judete> getAllJudete(){
+        return sirutaRepository.findDistinctByOrderByCountyName();
+    }
+
+    public List<Orase> getAllOraseByJudet(Integer id){
+        return  sirutaRepository.findByCountyIdOrderByCityName(id);
     }
 }

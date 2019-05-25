@@ -1,25 +1,23 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-dark justify-content-center rounded">
 
-    <a ng-if="globals.currentUser.isManager==false" class="navbar-brand d-flex w-50 mr-auto" href="#!/">
+    <a class="navbar-brand d-flex w-50 mr-auto" href="#!/">
         <img src="app/include/image/logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
     </a>
-    <a ng-if="globals.currentUser.isManager==true" class="navbar-brand d-flex w-50 mr-auto" href="#!/homeManager">
-        <img src="app/include/image/logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
-    </a>
-    <div class="navbar-collapse collapse w-100" id="collapsingNavbar">
+    <div class="navbar-collapse collapse w-100" marca="collapsingNavbar">
         <ul class="navbar-nav w-100 justify-content-center">
             <li ng-hide = "globals.currentUser.isManager" ng-class="isActiveNavBar('/')? 'nav-item active': 'nav-item'">
                 <a class="nav-link" href="#!/">Home</a>
             </li>
-            <li ng-show = "globals.currentUser.isManager" ng-class="isActiveNavBar('/homeManager')? 'nav-item active': 'nav-item'">
-                <a class="nav-link" href="#!/homeManager/">Home</a>
+            <li ng-class="isActiveNavBar('/adaugareAngajat')? 'nav-item active': 'nav-item'">
+                <a  class="nav-link" href="#!/adaugareAngajat">Adaugare Angajat</a>
             </li>
-            <li ng-class="isActiveNavBar('/task')? 'nav-item active': 'nav-item'">
-                <a  class="nav-link" href="#!/task">Task</a>
-            </li>
-            <li ng-class="isActiveNavBar('/taskIteration')? 'nav-item active': 'nav-item'">
-                <a  class="nav-link" href="#!/taskIteration">Task Iteration</a>
-            </li>
+<!--            <li ng-class="isActiveNavBar('/task')? 'nav-item active': 'nav-item'">-->
+<!--                <a  class="nav-link" href="#!/task">Task</a>-->
+<!--            </li>-->
+<!--            <li ng-class="isActiveNavBar('/taskIteration')? 'nav-item active': 'nav-item'">-->
+<!--                <a  class="nav-link" href="#!/taskIteration">Task Iteration</a>-->
+<!--            </li>-->
+
         </ul>
         <ul class="nav navbar-nav ml-auto w-100 justify-content-end">
             <li ng-class="isActiveNavBar('/editUser')? 'nav-item active': 'nav-item'">

@@ -6,5 +6,6 @@ import ro.facultate.aplicatieHR.entity.app.AppUser;
 
 public interface AppUserRepository extends JpaRepository<AppUser, Long> {
 	
-	public AppUser findByUsername(String username);
+	AppUser findByUsername(String username);
+	AppUser findByMarca(Long marca);
 }
