@@ -3,12 +3,12 @@ package ro.facultate.aplicatieHR.entity.dic;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "DIC_PERSO")
@@ -62,6 +62,13 @@ public class DicPerso {
 	@Column(name="modified")
 	@UpdateTimestamp
 	private LocalDateTime updateDateTime;
+
+	@OneToMany(
+			mappedBy = "persoana",
+			cascade = CascadeType.ALL,
+			orphanRemoval = true
+	)
+	private List<DicContract> contracte;
 
 	public Long getMarca() {
 		return marca;
@@ -173,5 +180,13 @@ public class DicPerso {
 
 	public void setPseudonim(String pseudonim) {
 		this.pseudonim = pseudonim;
+	}
+
+	public List<DicContract> getContracte() {
+		return contracte;
+	}
+
+	public void setContracte(List<DicContract> contracte) {
+		this.contracte = contracte;
 	}
 }
