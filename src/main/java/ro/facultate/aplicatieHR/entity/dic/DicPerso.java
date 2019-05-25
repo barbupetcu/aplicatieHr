@@ -14,6 +14,7 @@ import java.util.Date;
 @Table(name = "DIC_PERSO")
 public class DicPerso {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "marca")
     private Long marca;
 	

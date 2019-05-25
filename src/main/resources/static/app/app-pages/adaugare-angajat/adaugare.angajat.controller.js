@@ -14,14 +14,14 @@
         );
         vm.age='';
         vm.judete=[];
+        vm.orase=[];
+        vm.oraseAdresa=[];
 
         (function initController() {
             UserService.loadJudete()
                 .then(function (response){
                     if(response.success){
                         vm.judete=response.data;
-                        vm.judeteAdresa=response.data;
-                        console.log(vm.judete);
                     } else {
                         FlashService.Error (response.message);
                     }
@@ -53,12 +53,33 @@
             UserService.loadOrase(judet)
                 .then(function (response){
                     if(response.success){
-                        return response.data;
+                        vm.orase= response.data;
                     } else {
                         FlashService.Error (response.message);
-                        return null;
                     }
 
+                });
+        }
+
+        vm.updateCityAdresa = function updateCityAdresa(judet){
+            UserService.loadOrase(judet)
+                .then(function (response){
+                    if(response.success){
+                        vm.oraseAdresa= response.data;
+                    } else {
+                        FlashService.Error (response.message);
+                    }
+                });
+        }
+
+        vm.adaugareAngajat = function adaugareAngajat(){
+            UserService.adaugaAngajat(vm.angajat.dicPerso)
+                .then(function (response){
+                    if(response.success){
+                        FlashService.Success (response.data);
+                    } else {
+                        FlashService.Error (response.message);
+                    }
                 });
         }
 

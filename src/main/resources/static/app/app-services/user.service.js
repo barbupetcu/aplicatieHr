@@ -17,26 +17,8 @@
         service.loadHomeData=loadHomeData;
         service.loadJudete=loadJudete;
         service.loadOrase=loadOrase;
+        service.adaugaAngajat=adaugaAngajat;
 
-
-        // service.Create = Create;
-        // service.LoadDisabledUsers = LoadDisabledUsers;
-        // service.DeleteUser = DeleteUser;
-        // service.getPriority = getPriority;
-        // service.getTeamUsers = getTeamUsers;
-        // service.addTask = addTask;
-        // service.getTask = getTask;
-        // service.getTasks = getTasks;
-        // service.sendTasks = sendTasks;
-        // service.getDifficulty=getDifficulty;
-        // service.getIteration=getIteration;
-        // service.getTasksByDept=getTasksByDept;
-        // service.sendComment=sendComment;
-        // service.loadCommentsByTask=loadCommentsByTask;
-
-        // service.addIteration=addIteration;
-        // service.loadHomeManager=loadHomeManager;
-        
         
         return service;
 
@@ -73,11 +55,7 @@
         }
 
         function loadHomeData (id){
-            // return $http({
-            //     url: '/api/loadHome',
-            //     method: "GET",
-            //     params: {id: id}
-            // }).then(handleSuccess, handleError());
+
         }
 
         function loadJudete() {
@@ -92,126 +70,15 @@
             return $http.get('/data/orase',{params: {judet: judet}}).then(handleSuccess, handleError);
         }
 
-        // function loadHomeManager (deptId){
-        //     return $http({
-        //         url: '/api/loadHomeManager',
-        //         method: "GET",
-        //         params: {id: deptId}
-        //     }).then(handleSuccess, handleError());
-        // }
-        //
-        // function addIteration(iter) {
-        //     return $http.put('/api/senditeration', JSON.stringify(iter)).then(handleSuccessWithFlag, handleError('Eroare la crearea iteratiei'));
-        // }
-        //
-        //
-        // function sendComment(comment) {
-        // 	return $http.post('/api/addcomment', JSON.stringify(comment)).then(handleSuccess, handleError());
-        // }
-        //
-        // function loadCommentsByTask(taskId) {
-        //     return $http({
-        //         url: '/api/commentsbytask',
-        //         method: "GET",
-        //         params: {taskId: taskId}
-        //     }).then(handleSuccess, handleError());
-        // }
-        //
-        //
-        // function sendTasks(tasks) {
-        //     return $http.put('/api/sendtasks', JSON.stringify(tasks)).then(handleSuccessWithFlag, handleError('Eroare la crearea task-ului'));
-        // }
-        //
-        // function getTasks(sprintId) {
-        //     return $http({
-        //         url: '/api/gettasks',
-        //         method: "GET",
-        //         params: {sprintId: sprintId}
-        //     }).then(handleSuccessWithFlag, handleError('Task-urile nu au putut fi incarcate'));
-        // }
-        //
-        // function getTasksByDept() {
-        //     return $http({
-        //         url: '/api/gettasksByDept',
-        //         method: "GET",
-        //     }).then(handleSuccessWithFlag, handleError('Task-urile nu au putut fi incarcate'));
-        // }
-        //
-        // function getTask(taskId) {
-        //     return $http({
-        //         url: '/api/gettask',
-        //         method: "GET",
-        //         params: {id: taskId}
-        //     }).then(handleSuccess, handleError('Detaliile task-ului nu au putut fi incarcate'));
-        // }
-        //
-        // function addTask(task) {
-        // 	return $http.post('/api/addtask', JSON.stringify(task)).then(handleSuccess, handleError('Eroare la crearea task-ului'));
-        // }
-        //
-        // function getPriority() {
-        //     return $http({
-        //         url: '/api/priority',
-        //         method: "GET"
-        //     }).then(handleSuccess, handleError('Lista prioritatilor nu poate fi incarcata'));
-        // }
-        //
-        // function getDifficulty() {
-        //     return $http({
-        //         url: '/api/difficulty',
-        //         method: "GET"
-        //     }).then(handleSuccess, handleError('Lista dificultatilor nu poate fi incarcata'));
-        // }
-        //
-        // function getIteration() {
-        //     return $http({
-        //         url: '/api/iteration',
-        //         method: "GET"
-        //     }).then(handleSuccess, handleError('Lista iteratiilor nu poate fi incarcata'));
-        // }
-        //
-        // function getTeamUsers(dept) {
-        //     return $http({
-        //         url: '/api/getusers',
-        //         method: "GET",
-        //         params: {dept: dept}
-        //     }).then(handleSuccess, handleError('Utilizatorii nu a putut fi incarcati'));
-        // }
-        //
-
-        //
-
-        //
-
-        //
-        // function LoadDisabledUsers(dept) {
-        //     return $http({
-        //         url: '/api/disabledUsers',
-        //         method:"GET",
-        //         params: {dept: dept}
-        //     }).then(handleSuccess, handleError('Eroare la incarcarea utilizatorilor neactivati'));
-        // }
-        //
-        // function DeleteUser(id) {
-        //     return $http({
-        //         url: '/api/deleteUser',
-        //         method: "DELETE",
-        //         params: {id: id}
-        //     })
-        //         .then(handleSuccess, handleError('Utilizatorul nu a putut fi sters'));
-        // }
+        function adaugaAngajat(angajat) {
+            return $http.post('/contract/adaugaAngajat',JSON.stringify(angajat)).then(handleSuccess, handleError);
+        }
 
 
-
-        
 
         function handleSuccess(res) {
             return {success:true, data: res.data};
         }
-
-        // function handleSuccess(res) {
-        //     return res.data;
-        // }
 
         function handleError(error) {
                 var message = null;
