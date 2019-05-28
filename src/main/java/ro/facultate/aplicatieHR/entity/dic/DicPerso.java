@@ -49,7 +49,7 @@ public class DicPerso {
 	private String pseudonim;
 
 	@JsonProperty("address")
-	@OneToOne(fetch = FetchType.LAZY, cascade= CascadeType.ALL)
+	@OneToOne(cascade= CascadeType.ALL)
 	@JoinColumn(name="address")
 	private DicAdresa address;
 
@@ -63,12 +63,8 @@ public class DicPerso {
 	@UpdateTimestamp
 	private LocalDateTime updateDateTime;
 
-	@OneToMany(
-			mappedBy = "persoana",
-			cascade = CascadeType.ALL,
-			orphanRemoval = true
-	)
-	private List<DicContract> contracte;
+	@Column(name = "contract_activ")
+	private Boolean contractActiv;
 
 	public Long getMarca() {
 		return marca;
@@ -182,11 +178,11 @@ public class DicPerso {
 		this.pseudonim = pseudonim;
 	}
 
-	public List<DicContract> getContracte() {
-		return contracte;
+	public Boolean getContractActiv() {
+		return contractActiv;
 	}
 
-	public void setContracte(List<DicContract> contracte) {
-		this.contracte = contracte;
+	public void setContractActiv(Boolean contractActiv) {
+		this.contractActiv = contractActiv;
 	}
 }

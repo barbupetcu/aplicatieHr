@@ -1,0 +1,159 @@
+<div style="padding: 30px" ng-controller="DatePersonale as vm">
+    <form name="form" role="form" ng-submit="vm.updatePerson()">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <i ng-if="vm.dataLoading" class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+                <button class="btn btn-outline-success" ng-disabled="form.$invalid || vm.dataLoading" type="submit"><i class="fa fa-save"></i>    Adauga angajat</button>
+                <a href="#!/" class="btn btn-outline-danger" role="button"><i class="fa fa-window-close"></i>   Anuleaza</a>
+        <!--        <md-select placeholder="Selectati un angajat" ng-model="vm.persoanaHeader" md-on-open="vm.loadPerson(vm.persoanaHeader)" style="min-width: 200px;" required>-->
+        <!--            <md-option ng-value="angajat.marca" ng-repeat="angajat in vm.header">{{angajat.name}} {{angajat.lastName}}</md-option>-->
+        <!--        </md-select>-->
+            </div>
+            <div class="col-md-3 mb-3">
+                <select class="form-control" id="header" ng-model="vm.persoanaHeader" ng-change="vm.loadPerson(vm.persoanaHeader)" required>
+                    <option value="" disabled hidden selected>Selectati Angajatul</option>
+                    <option ng-repeat="pers in vm.header" value="{{pers.marca}}">{{pers.name}} {{pers.lastName}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <div class="input-group-append">
+                    <span class="input-group-text"><i class="fa fa-user"></i></span>
+                    <span class="input-group-text">Detalii Personale</span>
+                </div>
+            </div>
+            <ul class="list-group list-group-flush" style="padding-right: 30px; padding-left: 30px">
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="sex">Sex</label>
+                            <select class="form-control" id="sex" ng-model="vm.persoana.sex" required>
+                                <option value="" disabled hidden selected>Alegeti sexul</option>
+                                <option value="M">Masculin</option>
+                                <option value="F">Feminin</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="dataNasterii">Data nasterii</label>
+                            <div class="input-group">
+                                <md-datepicker name="dataNasterii" id="dataNasterii" ng-model="vm.persoana.dataNasterii" ng-change="vm.calculateAge(vm.persoana.dataNasterii)" md-max-date="vm.maxBirthday" required></md-datepicker>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="varsta">Varsta</label>
+                            <div class="input-group" id="varsta" >{{vm.age}}</div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="nume">Nume</label>
+                            <input type="text" name="name" class="form-control" id="nume" ng-model="vm.persoana.name" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="prenume">Prenume</label>
+                            <input type="text" name="name" class="form-control" id="prenume" ng-model="vm.persoana.lastName" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="pseudonim">Pseudonim</label>
+                            <input type="text" name="name" class="form-control" id="pseudonim" ng-model="vm.persoana.pseudonim">
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="judetulNasterii">Judetul Nasterii</label>
+                            <select class="form-control" id="judetulNasterii" ng-model="vm.persoana.judetulNasterii"
+                                    ng-options="item.countyId as item.countyName for item in vm.judete" ng-change="vm.updateCity(vm.persoana.judetulNasterii)" required></select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="orasulNasterii">Localitatea Nasterii</label>
+                            <select class="form-control" id="orasulNasterii" ng-model="vm.persoana.orasulNasterii"
+                                    ng-options="item.id as item.cityName for item in vm.orase" required></select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="cnp">CNP</label>
+                            <input type="text" name="cnp" class="form-control" id="cnp" ng-model="vm.persoana.cnp" required>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="email">Email</label>
+                            <input type="text" name="email" class="form-control" id="email" ng-model="vm.persoana.email">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="phone">Telefon</label>
+                            <input type="text" name="phone" class="form-control" id="phone" ng-model="vm.persoana.phone">
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <div class="input-group-append">
+                    <span class="input-group-text"><i class="fa fa-address-card"></i></span>
+                    <span class="input-group-text">Adresa</span>
+                </div>
+            </div>
+            <ul class="list-group list-group-flush" style="padding-right: 30px; padding-left: 30px">
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="county">Judet</label>
+                            <select class="form-control" id="county" ng-model="vm.persoana.address.countyId"
+                                    ng-options="item.countyId as item.countyName for item in vm.judete" ng-change="vm.updateCityAdresa(vm.persoana.address.countyId)"  required></select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="city">Localitate</label>
+                            <select class="form-control" id="city" ng-model="vm.persoana.address.cityId"
+                                    ng-options="item.id as item.cityName for item in vm.oraseAdresa" required>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="strada">Strada</label>
+                            <input type="text" name="strada" class="form-control" id="strada" ng-model="vm.persoana.address.street" required>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="streetNo">Numar Strada</label>
+                            <input type="text" name="streetNo" class="form-control" id="streetNo" ng-model="vm.persoana.address.streetNo" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="building">Bloc</label>
+                            <input type="text" name="building" class="form-control" id="building" ng-model="vm.persoana.address.building">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="entrance">Scara</label>
+                            <input type="text" name="entrance" class="form-control" id="entrance" ng-model="vm.persoana.address.entrance">
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="floor">Etaj</label>
+                            <input type="text" name="floor" class="form-control" id="floor" ng-model="vm.persoana.address.floor">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="appartment">Apartament</label>
+                            <input type="text" name="appartment" class="form-control" id="appartment" ng-model="vm.persoana.address.appartment">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="postalCode">Cod Postal</label>
+                            <input type="text" name="postalCode" class="form-control" id="postalCode" ng-model="vm.persoana.address.postalCode">
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

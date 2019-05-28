@@ -46,6 +46,10 @@
             .when('/adaugareAngajat', {
                 templateUrl: path + 'adaugare-angajat/adaugare.angajat.html',
             })
+            .when('/datePersonale', {
+                templateUrl: path + 'date-personale/date.personale.html',
+            })
+
 
             .otherwise({ redirectTo: '/login' });
     }

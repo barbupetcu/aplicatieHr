@@ -1,6 +1,11 @@
 package ro.facultate.aplicatieHR.entity.dic;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -19,16 +24,19 @@ public class DicContract {
     @Column(name = "end_date")
     private Date endDate;
 
-    @OneToMany(
-            mappedBy = "contract",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<DicContracteIsto> comments;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "persoana")
     private DicPerso persoana;
+
+    @JsonIgnore
+    @Column(name="created", updatable=false)
+    @CreationTimestamp
+    private LocalDateTime createDateTime;
+
+    @JsonIgnore
+    @Column(name="modified")
+    @UpdateTimestamp
+    private LocalDateTime updateDateTime;
 
     public Long getId() {
         return id;
@@ -54,19 +62,27 @@ public class DicContract {
         this.endDate = endDate;
     }
 
-    public List<DicContracteIsto> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<DicContracteIsto> comments) {
-        this.comments = comments;
-    }
-
     public DicPerso getPersoana() {
         return persoana;
     }
 
     public void setPersoana(DicPerso persoana) {
         this.persoana = persoana;
+    }
+
+    public LocalDateTime getCreateDateTime() {
+        return createDateTime;
+    }
+
+    public void setCreateDateTime(LocalDateTime createDateTime) {
+        this.createDateTime = createDateTime;
+    }
+
+    public LocalDateTime getUpdateDateTime() {
+        return updateDateTime;
+    }
+
+    public void setUpdateDateTime(LocalDateTime updateDateTime) {
+        this.updateDateTime = updateDateTime;
     }
 }
