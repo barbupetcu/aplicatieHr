@@ -1,11 +1,15 @@
 package ro.facultate.aplicatieHR.entity.dic;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import ro.facultate.aplicatieHR.entity.data.Dept;
 import ro.facultate.aplicatieHR.entity.data.Posturi;
 import ro.facultate.aplicatieHR.entity.data.TipuriContracte;
 
 import javax.persistence.*;
 import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -44,7 +48,7 @@ public class DicContracteIsto {
     @Column(name = "salariu")
     private Double salariu;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "contract")
     private DicContract contract;
 
@@ -52,7 +56,17 @@ public class DicContracteIsto {
     private Integer nrOre;
 
     @Column(name = "ora_inceput")
-    private Time oraInceput;
+    private LocalDateTime oraInceput;
+
+    @JsonIgnore
+    @Column(name="created", updatable=false)
+    @CreationTimestamp
+    private LocalDateTime createDateTime;
+
+    @JsonIgnore
+    @Column(name="modified")
+    @UpdateTimestamp
+    private LocalDateTime updateDateTime;
 
 
     public Long getDate() {
@@ -143,11 +157,27 @@ public class DicContracteIsto {
         this.nrOre = nrOre;
     }
 
-    public Time getOraInceput() {
+    public LocalDateTime getOraInceput() {
         return oraInceput;
     }
 
-    public void setOraInceput(Time oraInceput) {
+    public void setOraInceput(LocalDateTime oraInceput) {
         this.oraInceput = oraInceput;
+    }
+
+    public LocalDateTime getCreateDateTime() {
+        return createDateTime;
+    }
+
+    public void setCreateDateTime(LocalDateTime createDateTime) {
+        this.createDateTime = createDateTime;
+    }
+
+    public LocalDateTime getUpdateDateTime() {
+        return updateDateTime;
+    }
+
+    public void setUpdateDateTime(LocalDateTime updateDateTime) {
+        this.updateDateTime = updateDateTime;
     }
 }

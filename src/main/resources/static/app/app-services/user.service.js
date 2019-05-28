@@ -18,6 +18,12 @@
         service.loadJudete=loadJudete;
         service.loadOrase=loadOrase;
         service.adaugaAngajat=adaugaAngajat;
+        service.loadDepts = loadDepts;
+        service.loadPosts = loadPosts;
+        service.updatePerson = updatePerson;
+        service.loadHeader = loadHeader;
+        service.loadPerson = loadPerson;
+
 
         
         return service;
@@ -74,6 +80,25 @@
             return $http.post('/contract/adaugaAngajat',JSON.stringify(angajat)).then(handleSuccess, handleError);
         }
 
+        function loadDepts() {
+            return $http.get('/data/depts').then(handleSuccess, handleError);
+        }
+
+        function loadPosts(deptId) {
+            return $http.get('/data/posturi',{params: {deptId: deptId}}).then(handleSuccess, handleError);
+        }
+
+        function updatePerson(pers) {
+            return $http.put('/contract/updatePerson',JSON.stringify(pers)).then(handleSuccess, handleError);
+        }
+
+        function loadHeader() {
+            return $http.get('/contract/loadHeader').then(handleSuccess, handleError);
+        }
+
+        function loadPerson(marca) {
+            return $http.get('/contract/loadPerson', {params: {marca: marca}}).then(handleSuccess, handleError);
+        }
 
 
         function handleSuccess(res) {

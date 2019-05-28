@@ -31,4 +31,10 @@ public class TipuriContracte {
     public void setName(String name) {
         this.name = name;
     }
+
+    public TipuriContracte(String id) {
+        this.id = Integer.parseInt(id);
+    }
+
+    public TipuriContracte() {}
 }

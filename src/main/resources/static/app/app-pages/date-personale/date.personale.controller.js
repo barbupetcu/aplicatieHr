@@ -3,26 +3,23 @@
 
     angular
         .module('app')
-        .controller('AdaugareAngajat', AdaugareAngajat);
+        .controller('DatePersonale', DatePersonale);
 
-    AdaugareAngajat.$inject = ['UserService','FlashService','$location'];
-    function AdaugareAngajat(UserService, FlashService, $location) {
+    DatePersonale.$inject = ['UserService','FlashService'];
+    function DatePersonale(UserService, FlashService) {
         var vm = this;
-        vm.today = new Date();
-        vm.maxPerProba = new Date(vm.today.getFullYear(), vm.today.getMonth() + 3, vm.today.getDate());
-        vm.maxBirthday = new Date(
-            vm.today.getFullYear()-16, vm.today.getMonth(), vm.today.getDate()
-        );
+        vm.header=[];
         vm.age='';
         vm.judete=[];
         vm.orase=[];
         vm.oraseAdresa=[];
-        vm.posturi = [];
-        vm.departamente = [];
-        vm.contractIsto = { oraInceput: new Date(
-                            vm.today.getFullYear(), vm.today.getMonth(), vm.today.getDate(), 9, 0, 0)};
+        vm.today = new Date();
+        vm.maxBirthday = new Date(
+            vm.today.getFullYear()-16, vm.today.getMonth(), vm.today.getDate()
+        );
 
         (function initController() {
+            vm.dataLoading=true;
             UserService.loadJudete()
                 .then(function (response){
                     if(response.success){
@@ -32,21 +29,24 @@
                     }
 
                 });
-
-            UserService.loadDepts()
+            UserService.loadHeader()
                 .then(function (response){
                     if(response.success){
-                        vm.departamente= response.data;
+                        vm.header=response.data;
                     } else {
                         FlashService.Error (response.message);
                     }
 
                 });
+            vm.dataLoading=false;
+
+
 
         })();
 
         vm.calculateAge = function calculateAge(d1){
             var months;
+            d1 = new Date(d1);
             months = (vm.today.getFullYear() - d1.getFullYear()) * 12;
             months -= d1.getMonth();
             months += vm.today.getMonth();
@@ -88,38 +88,42 @@
                 });
         }
 
+        vm.updatePerson = function updatePerson(){
+            vm.dataLoading=true;
+            if (vm.persoana.marca){
+                UserService.updatePerson(vm.persoana)
+                    .then(function (response){
+                        if(response.success){
+                            FlashService.Success (response.data);
+                            vm.dataLoading=false;
+                        } else {
+                            FlashService.Error (response.message);
+                            vm.dataLoading=false;
+                        }
+                    });
+            }
+            else{
+                FlashService.Error ('Selectati o persoana!');
+            }
 
-        vm.updatePosts = function updatePosts(dept){
-            UserService.loadPosts(dept)
+        }
+
+        vm.loadPerson = function loadPerson(marca){
+            vm.dataLoading=true;
+            UserService.loadPerson(marca)
                 .then(function (response){
                     if(response.success){
-                        vm.posturi= response.data;
+                        vm.updateCity(response.data.judetulNasterii);
+                        vm.updateCityAdresa(response.data.address.countyId);
+                        vm.persoana=response.data;
+                        vm.calculateAge(vm.persoana.dataNasterii)
+                        vm.dataLoading=false;
                     } else {
                         FlashService.Error (response.message);
+                        vm.dataLoading=false;
                     }
                 });
         }
-
-
-
-        vm.adaugareAngajat = function adaugareAngajat(){
-            UserService.adaugaAngajat(vm.contractIsto)
-                .then(function (response){
-                    if(response.success){
-                        FlashService.Success (response.data);
-                        $location.path('/');
-                    } else {
-                        FlashService.Error (response.message);
-                    }
-                });
-        }
-
-        vm.updatePerProba = function updatePerProba(data){
-            vm.maxPerProba = new Date(data.getFullYear(), data.getMonth() + 3, data.getDate());
-            vm.contractIsto.perioadaProbaData = vm.maxPerProba;
-        }
-
-
 
 
     }

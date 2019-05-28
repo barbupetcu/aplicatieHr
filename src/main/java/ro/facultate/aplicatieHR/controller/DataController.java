@@ -47,9 +47,9 @@ public class DataController{
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(gson.toJson("Lista de tipuri de contracte nu poate fi incarcata"));
 	}
 
-	@RequestMapping(value = "/posturi/{dept}", method = RequestMethod.GET)
-	public ResponseEntity getPosturi(@PathVariable("dept") Integer deptId){
-		List<Posturi> posturi = dataService.getPosturiDept(deptId);
+	@RequestMapping(value = "/posturi", method = RequestMethod.GET)
+	public ResponseEntity getPosturi(@RequestParam(value = "deptId", required = false) String deptId){
+		List<Posturi> posturi = dataService.getPosturiDept(Integer.parseInt(deptId));
 		if (posturi != null) {
 			return ResponseEntity.ok().body(posturi);
 		}

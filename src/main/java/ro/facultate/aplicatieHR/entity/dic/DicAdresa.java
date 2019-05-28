@@ -1,7 +1,12 @@
 package ro.facultate.aplicatieHR.entity.dic;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "dic_adresa")
@@ -38,6 +43,16 @@ public class DicAdresa {
 
     @Column(name = "cod_postal")
     private String postalCode;
+
+    @JsonIgnore
+    @Column(name="created", updatable=false)
+    @CreationTimestamp
+    private LocalDateTime createDateTime;
+
+    @JsonIgnore
+    @Column(name="modified")
+    @UpdateTimestamp
+    private LocalDateTime updateDateTime;
 
     public Long getId() {
         return id;
@@ -117,5 +132,21 @@ public class DicAdresa {
 
     public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
+    }
+
+    public LocalDateTime getCreateDateTime() {
+        return createDateTime;
+    }
+
+    public void setCreateDateTime(LocalDateTime createDateTime) {
+        this.createDateTime = createDateTime;
+    }
+
+    public LocalDateTime getUpdateDateTime() {
+        return updateDateTime;
+    }
+
+    public void setUpdateDateTime(LocalDateTime updateDateTime) {
+        this.updateDateTime = updateDateTime;
     }
 }
