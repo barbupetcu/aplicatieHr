@@ -13,7 +13,7 @@ public interface DicContractIstoRepository extends JpaRepository<DicContracteIst
 
     DicContracteIsto findFirstByContract_Persoana_MarcaOrderByDateEffDesc(Long marca);
 
-    List<Ocurente> findByContract_Id(Long id);
+    List<Ocurente> findByContract_Persoana_Marca(Long id);
 
     DicContracteIsto findByDateEffAndContract_Persoana_Marca(Date dateEff, Long marca);
 

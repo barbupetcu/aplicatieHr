@@ -29,6 +29,7 @@ public class ContractService {
     @Autowired
     DicContractRepository dicContractRepository;
 
+
     public void save(DicPerso dicPerso){
         dicPersoRepository.save(dicPerso);
     }
@@ -38,6 +39,15 @@ public class ContractService {
     }
 
     public void createContract(DicContracteIsto dicContracteIsto){
+
+        dicContracteIsto.setId(null);
+        dicContracteIsto.getContract().setId(null);
+        dicContracteIsto.setEndDate(null);
+        dicContracteIsto.getContract().setEndDate(null);
+        if(dicContracteIsto.getContract().getPersoana().getMarca()!=null){
+            DicPerso dicPerso = dicPersoRepository.findByMarca(dicContracteIsto.getContract().getPersoana().getMarca());
+            dicContracteIsto.getContract().setPersoana(dicPerso);
+        }
         dicContracteIsto.getContract().getPersoana().setContractActiv(true);
         dicContracteIsto.setDateEff(dicContracteIsto.getContract().getStartDate());
         dicContractIstoRepository.save(dicContracteIsto);
@@ -70,7 +80,7 @@ public class ContractService {
         DicContracteIsto dicContracteIsto = dicContractIstoRepository.findFirstByContract_Persoana_MarcaOrderByDateEffDesc(marca);
         response.put("contractIsto", dicContracteIsto);
         Long nrContract = dicContracteIsto.getContract().getId();
-        List<Ocurente> ocurente = dicContractIstoRepository.findByContract_Id(nrContract);
+        List<Ocurente> ocurente = dicContractIstoRepository.findByContract_Persoana_Marca(marca);
 
         response.put("ocurente", ocurente);
         return response;
