@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-dark justify-content-center rounded">
 
-    <a class="navbar-brand d-flex w-50 mr-auto" href="#!/">
+    <a  href="#!/">
         <img src="app/include/image/logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
     </a>
     <div class="navbar-collapse collapse w-100" marca="collapsingNavbar">
@@ -9,20 +9,23 @@
                 <a class="nav-link" href="#!/">Home</a>
             </li>
             <li ng-class="isActiveNavBar('/adaugareAngajat')? 'nav-item active': 'nav-item'">
-                <a  class="nav-link" href="#!/adaugareAngajat">Adaugare Angajat</a>
+                <a  class="nav-link" href="#!/adaugareAngajat">Adaugare angajat</a>
             </li>
             <li ng-class="isActiveNavBar('/datePersonale')? 'nav-item active': 'nav-item'">
-                <a  class="nav-link" href="#!/datePersonale">Date Personale</a>
+                <a  class="nav-link" href="#!/datePersonale">Date personale</a>
             </li>
-<!--            <li ng-class="isActiveNavBar('/taskIteration')? 'nav-item active': 'nav-item'">-->
-<!--                <a  class="nav-link" href="#!/taskIteration">Task Iteration</a>-->
-<!--            </li>-->
+            <li ng-class="isActiveNavBar('/dateContract')? 'nav-item active': 'nav-item'">
+                <a  class="nav-link" href="#!/dateContract">Contracte</a>
+            </li>
+            <li ng-class="isActiveNavBar('/inchidereContract')? 'nav-item active': 'nav-item'">
+                <a  class="nav-link" href="#!/inchidereContract">Inchidere contracte</a>
+            </li>
 
         </ul>
-        <ul class="nav navbar-nav ml-auto w-100 justify-content-end">
+        <ul class="nav navbar-nav ml-auto w-50 justify-content-end">
             <li ng-class="isActiveNavBar('/editUser')? 'nav-item active': 'nav-item'">
                 <a class="nav-link" href="#!/editUser" aria-label="Settings">
-                    <i class="fa fa-cog" aria-hidden="true"> {{globals.currentUser.name}} {{globals.currentUser.lastName}}</i>
+                    <i class="fa fa-cog" aria-hidden="true"></i> {{globals.currentUser.name}} {{globals.currentUser.lastName}}
                 </a>
             </li>           
         </ul>

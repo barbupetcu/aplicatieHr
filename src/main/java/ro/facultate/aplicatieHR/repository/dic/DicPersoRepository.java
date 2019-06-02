@@ -13,5 +13,7 @@ public interface DicPersoRepository extends JpaRepository<DicPerso, Long> {
 	DicPerso findByMarca(Long id);
 
 	List<AngajatHeader> findAllBy();
+
+	List<AngajatHeader> findAllByContractActiv(Boolean contractActiv);
 	
 }

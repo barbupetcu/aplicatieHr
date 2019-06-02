@@ -1,0 +1,25 @@
+<style>
+    .md-datepicker-calendar-pane{
+        z-index: 1200}
+</style>
+<div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLongTitle">Creare act aditional</h5>
+    <button type="button" class="close" aria-label="Close" ng-click="vm.Dismiss()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <form name="formAdaugareOcurenta" ng-submit="vm.addOcurenta()" role="form">
+        <div class="form-group" style="width:auto;" ng-class="{ 'has-error': formAdaugareOcurenta.dateEff.$dirty && formAdaugareOcurenta.dateEff.$error.required }">
+            <label for="dateEff">Selectati data in care vor intra in vigoare modificarile</label>
+            <div flex-gt-xs>
+                <md-datepicker id="dateEff" name="dateEff" ng-model="vm.contractIsto.dateEff" md-open-on-focus md-min-date="vm.minDateEff" required></md-datepicker>
+            </div>
+            <span ng-show="formAdaugareOcurenta.dateEff.$dirty && formAdaugareOcurenta.dateEff.$error.required" class="text-danger">Data este obligatorie</span>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-outline-success"><i class="fa fa-save"></i>  Creaza</button>
+            <button type="button" class="btn btn-outline-danger" data-dismiss="modal" ng-disabled="vm.dataLoading" ng-click="vm.Dismiss()"><i class="fa fa-window-close"></i>  Inchide</button>
+        </div>
+    </form>
+</div>

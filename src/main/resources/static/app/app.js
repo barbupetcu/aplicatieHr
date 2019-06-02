@@ -31,26 +31,30 @@
         var path = 'app/app-pages/';
         $routeProvider
             .when('/login', {
-                templateUrl: path + 'login/login.view.html',
+                templateUrl: path + 'login/login.view.html'
             })
 
             .when('/register', {
-                templateUrl: path + 'register/register.view.html',
+                templateUrl: path + 'register/register.view.html'
             })
             .when('/', {
-                templateUrl: path + 'home/home.view.html',
+                templateUrl: path + 'home/home.view.html'
             })
             .when('/editUser', {
-                templateUrl: path + 'users/edit-user/editUser.view.html',
+                templateUrl: path + 'users/edit-user/editUser.view.html'
             })
             .when('/adaugareAngajat', {
-                templateUrl: path + 'adaugare-angajat/adaugare.angajat.html',
+                templateUrl: path + 'adaugare-angajat/adaugare.angajat.html'
             })
             .when('/datePersonale', {
-                templateUrl: path + 'date-personale/date.personale.html',
+                templateUrl: path + 'date-personale/date.personale.html'
             })
-
-
+            .when('/dateContract', {
+                templateUrl: path + 'date-contract/date.contract.html'
+            })
+            .when('/inchidereContract', {
+                templateUrl: path + 'inchidere-contract/inchidere.contract.html'
+            })
             .otherwise({ redirectTo: '/login' });
     }
 
