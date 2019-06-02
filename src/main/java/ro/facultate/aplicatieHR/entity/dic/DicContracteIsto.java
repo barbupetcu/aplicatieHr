@@ -1,14 +1,15 @@
 package ro.facultate.aplicatieHR.entity.dic;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.UpdateTimestamp;
 import ro.facultate.aplicatieHR.entity.data.Dept;
 import ro.facultate.aplicatieHR.entity.data.Posturi;
 import ro.facultate.aplicatieHR.entity.data.TipuriContracte;
 
 import javax.persistence.*;
-import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -19,7 +20,7 @@ public class DicContracteIsto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long Date;
+    private Long id;
 
     @Column(name = "date_eff")
     private Date dateEff;
@@ -68,13 +69,12 @@ public class DicContracteIsto {
     @UpdateTimestamp
     private LocalDateTime updateDateTime;
 
-
-    public Long getDate() {
-        return Date;
+    public Long getId() {
+        return id;
     }
 
-    public void setDate(Long date) {
-        Date = date;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public java.util.Date getDateEff() {
@@ -179,5 +179,19 @@ public class DicContracteIsto {
 
     public void setUpdateDateTime(LocalDateTime updateDateTime) {
         this.updateDateTime = updateDateTime;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        DicContracteIsto newContract = (DicContracteIsto) obj;
+        if(newContract.getTipContract().getId() == this.tipContract.getId() &&
+                newContract.getNrOre() == this.nrOre &&
+                newContract.getDept().getDeptId() == this.dept.getDeptId() &&
+                newContract.getPost().getId() == this.post.getId() &&
+                Double.hashCode(newContract.getSalariu().hashCode())  == Double.hashCode(this.salariu.hashCode()))
+        {
+            return true;
+        }
+        return false;
     }
 }

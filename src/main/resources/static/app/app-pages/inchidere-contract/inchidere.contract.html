@@ -1,0 +1,75 @@
+<div style="padding: 30px" ng-controller="InchidereContract as vm">
+    <form name="form" role="form" ng-submit="vm.closeContract($event)">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <i ng-if="vm.dataLoading" class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+                <button class="btn btn-outline-success" ng-disabled="form.$invalid || vm.dataLoading" type="submit"><i class="fa fa-save"></i>    Salveaza</button>
+                <a href="#!/" class="btn btn-outline-danger" role="button"><i class="fa fa-window-close"></i>   Anuleaza</a>
+            </div>
+            <div class="col-md-3 mb-3">
+                <select class="form-control" id="header" ng-model="vm.persoanaHeader" ng-change="vm.loadContract(vm.persoanaHeader.marca)"
+                        ng-options="pers as pers.name +' ' +  pers.lastName for pers in vm.header" required>
+                    <option value="" disabled hidden selected>Selectati Angajatul</option>
+                </select>
+            </div>
+            <div ng-if="vm.isHeader" class="col-md-3 mb-3">
+                <span class="text-danger">Nu exista angajati activi!</span>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <div class="input-group-append">
+                    <span class="input-group-text"><i class="fas fa-calendar-times"></i></i></span>
+                    <span class="input-group-text">Date contract ce va fi inchis</span>
+                </div>
+            </div>
+            <ul class="list-group list-group-flush" style="padding-right: 30px; padding-left: 30px">
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="startDate">Data inceput contract</label>
+                            <div class="input-group">
+                                <md-datepicker name="startDate" id="startDate" ng-model="vm.contractIsto.contract.startDate" ng-disabled="true" required></md-datepicker>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="dept">Departament</label>
+                            <select class="form-control" id="dept" ng-model="vm.contractIsto.dept.deptId"
+                                    ng-options = "dept.deptId as dept.numeDept for dept in vm.departamente" ng-disabled="true"  required>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="post">Post</label>
+                            <select class="form-control" id="post" ng-model="vm.contractIsto.post.id"
+                                    ng-options = "post.id as post.name for post in vm.posturi" ng-disabled="true" required>
+                            </select>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="endDate">Introduceti data sfarsitului de contract</label>
+                            <div class="input-group">
+                                <md-datepicker name="startDate" id="endDate" ng-model="vm.contractIsto.contract.endDate" md-min-date="vm.maxEndDate" required></md-datepicker>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="form-check">
+                                <label class="form-check-label" for="preaviz">Preaviz</label>
+                                <br>
+                                <md-checkbox id="preaviz" name="preaviz" ng-model="vm.contractIsto.contract.preaviz" aria-label="Checkbox 1"></md-checkbox>
+                            </div>
+                        </div>
+                        <div ng-if="vm.contractIsto.contract.preaviz" class="col-md-4 mb-3">
+                            <label class="field-label-responsive" for="dataPreaviz">Data inceput preaviz</label>
+                            <div class="input-group">
+                                <md-datepicker name="dataPreaviz" id="dataPreaviz" ng-model="vm.contractIsto.contract.preavizDate" md-max-date="vm.contractIsto.contract.endDate" md-min-date="vm.contractIsto.dateEff" ng-required="vm.contractIsto.contract.preaviz"></md-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

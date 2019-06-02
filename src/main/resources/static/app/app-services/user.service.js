@@ -23,7 +23,10 @@
         service.updatePerson = updatePerson;
         service.loadHeader = loadHeader;
         service.loadPerson = loadPerson;
-
+        service.loadContract = loadContract;
+        service.loadOcurenta = loadOcurenta;
+        service.addOcurenta = addOcurenta;
+        service.closeContract = closeContract;
 
         
         return service;
@@ -92,13 +95,36 @@
             return $http.put('/contract/updatePerson',JSON.stringify(pers)).then(handleSuccess, handleError);
         }
 
-        function loadHeader() {
-            return $http.get('/contract/loadHeader').then(handleSuccess, handleError);
+        function loadHeader(contracActiv) {
+            return $http.get('/contract/loadHeader', {params: {contracActiv: contracActiv}}).then(handleSuccess, handleError);
         }
 
         function loadPerson(marca) {
             return $http.get('/contract/loadPerson', {params: {marca: marca}}).then(handleSuccess, handleError);
         }
+
+        function loadContract(marca) {
+            return $http.get('/contract/loadContract', {params: {marca: marca}}).then(handleSuccess, handleError);
+        }
+
+        function loadOcurenta(dateEff, marca) {
+            var ocurentaDTO = {marca: marca, dateEff: dateEff};
+            var test = JSON.stringify(ocurentaDTO);
+            return $http.post('/contract/loadOcurenta', JSON.stringify(ocurentaDTO)).then(handleSuccess, handleError);
+        }
+
+        function addOcurenta(contractIsto) {
+            return $http.post('/contract/addOcurenta', JSON.stringify(contractIsto)).then(handleSuccess, handleError);
+        }
+
+        function closeContract(contractIsto) {
+            return $http.post('/contract/closeContract', JSON.stringify(contractIsto)).then(handleSuccess, handleError);
+        }
+
+
+
+
+
 
 
         function handleSuccess(res) {

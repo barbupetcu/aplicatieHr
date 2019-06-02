@@ -39,6 +39,7 @@
 
                 });
             vm.dataLoading=false;
+            vm.showContractInactiv = false;
 
 
 
@@ -123,6 +124,10 @@
                         vm.dataLoading=false;
                     }
                 });
+        }
+
+        vm.showStatus = function showStatus(activ){
+            vm.showContractInactiv = !activ;
         }
 
 

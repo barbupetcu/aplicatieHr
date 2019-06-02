@@ -28,6 +28,12 @@ public class DicContract {
     @JoinColumn(name = "persoana")
     private DicPerso persoana;
 
+    @Column(name = "preaviz")
+    private Boolean preaviz;
+
+    @Column(name = "preaviz_date")
+    private Date preavizDate;
+
     @JsonIgnore
     @Column(name="created", updatable=false)
     @CreationTimestamp
@@ -84,5 +90,21 @@ public class DicContract {
 
     public void setUpdateDateTime(LocalDateTime updateDateTime) {
         this.updateDateTime = updateDateTime;
+    }
+
+    public Boolean getPreaviz() {
+        return preaviz;
+    }
+
+    public void setPreaviz(Boolean preaviz) {
+        this.preaviz = preaviz;
+    }
+
+    public Date getPreavizDate() {
+        return preavizDate;
+    }
+
+    public void setPreavizDate(Date preavizDate) {
+        this.preavizDate = preavizDate;
     }
 }

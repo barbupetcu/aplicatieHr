@@ -1,8 +1,19 @@
-<div style="padding: 30px" ng-controller="AdaugareAngajat as vm">
+<div style="padding: 30px" ng-controller="AdaugareAngajat as vm" data-ng-init="vm.init($event)">
     <form name="form" role="form" ng-submit="vm.adaugareAngajat()">
-        <button class="btn btn-outline-success" ng-disabled="form.$invalid || vm.dataLoading" type="submit"><i class="fa fa-save"></i>    Adauga angajat</button>
-        <a href="#!/" class="btn btn-outline-danger" role="button"><i class="fa fa-window-close"></i>   Anuleaza</a>
-        <a href="#!/" class="btn btn-outline-secondary" role="button"><i class="fa fa-pause"></i>   Pauza</a>
+        <div class="col-md-4 mb-3">
+            <button class="btn btn-outline-success" type="submit"><i class="fa fa-plus"></i>    Adauga angajat</button>
+            <a href="#!/" class="btn btn-outline-danger" role="button"><i class="fa fa-window-close"></i>   Anuleaza</a>
+            <a href="#!/" class="btn btn-outline-secondary" role="button"><i class="fa fa-pause"></i>   Pauza</a>
+        </div>
+        <div ng-if="vm.reangajare" class="col-md-2 mb-3">
+            <select class="form-control" id="header" ng-model="vm.persoanaHeader" ng-change="vm.loadContract(vm.persoanaHeader.marca)"
+                    ng-options="pers as pers.name +' ' +  pers.lastName for pers in vm.header" required>
+                <option value="" disabled hidden selected>Selectati Angajatul</option>
+            </select>
+        </div>
+        <div ng-if="vm.reangajare && vm.isHeader" class="col-md-6 mb-3">
+            <span class="text-danger">Nu exista persoane in baza de date care pot fi reangajate!</span>
+        </div>
         <div class="card">
             <div class="card-header">
                 <div class="input-group-append">
@@ -53,17 +64,13 @@
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label class="field-label-responsive" for="judetulNasterii">Judetul Nasterii</label>
-                            <select class="form-control" id="judetulNasterii" ng-model="vm.contractIsto.contract.persoana.judetulNasterii" ng-change="vm.updateCity(vm.contractIsto.contract.persoana.judetulNasterii)" required>
-                                <option value="" disabled hidden selected>Alegeti judetul</option>
-                                <option ng-repeat="judet in vm.judete" value="{{judet.countyId}}">{{judet.countyName}}</option>
-                            </select>
+                            <select class="form-control" id="judetulNasterii" ng-model="vm.contractIsto.contract.persoana.judetulNasterii"
+                                    ng-options="item.countyId as item.countyName for item in vm.judete" ng-change="vm.updateCity(vm.persoana.judetulNasterii)" required></select>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="field-label-responsive" for="orasulNasterii">Localitatea Nasterii</label>
-                            <select class="form-control" id="orasulNasterii" ng-model="vm.contractIsto.contract.persoana.orasulNasterii" required>
-                                <option value="" disabled hidden selected>Alegeti localitate</option>
-                                <option ng-repeat="oras in vm.orase" value="{{oras.id}}">{{oras.cityName}}</option>
-                            </select>
+                            <select class="form-control" id="orasulNasterii" ng-model="vm.contractIsto.contract.persoana.orasulNasterii"
+                                    ng-options="item.id as item.cityName for item in vm.orase" required></select>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="field-label-responsive" for="cnp">CNP</label>
@@ -97,16 +104,13 @@
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label class="field-label-responsive" for="county">Judet</label>
-                            <select class="form-control" id="county" ng-model="vm.contractIsto.contract.persoana.address.countyId" ng-change="vm.updateCityAdresa(vm.contractIsto.contract.persoana.address.countyId)"  required>
-                                <option value="" disabled hidden selected>Alegeti judetul</option>
-                                <option ng-repeat="judet in vm.judete" value="{{judet.countyId}}">{{judet.countyName}}</option>
-                            </select>
+                            <select class="form-control" id="county" ng-model="vm.contractIsto.contract.persoana.address.countyId"
+                                    ng-options="item.countyId as item.countyName for item in vm.judete" ng-change="vm.updateCityAdresa(vm.persoana.address.countyId)"  required></select>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label class="field-label-responsive" for="city">Oras</label>
-                            <select class="form-control" id="city" ng-model="vm.contractIsto.contract.persoana.address.cityId" required>
-                                <option value="" disabled hidden selected>Alegeti orasul</option>
-                                <option ng-repeat="oras in vm.oraseAdresa" value="{{oras.id}}">{{oras.cityName}}</option>
+                            <label class="field-label-responsive" for="city">Localitate</label>
+                            <select class="form-control" id="city" ng-model="vm.contractIsto.contract.persoana.address.cityId"
+                                    ng-options="item.id as item.cityName for item in vm.oraseAdresa" required>
                             </select>
                         </div>
                         <div class="col-md-4 mb-3">
@@ -152,7 +156,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="input-group-append">
-                    <span class="input-group-text"><i class="fas fa-file-contract"></i></span>
+                    <span class="input-group-text"><i class="fas fa-file-signature"></i></span>
                     <span class="input-group-text">Detalii Contract</span>
                 </div>
             </div>
@@ -162,7 +166,7 @@
                         <div class="col-md-4 mb-3">
                             <label class="field-label-responsive" for="startDate">Data inceput</label>
                             <div class="input-group">
-                                <md-datepicker name="startDate" id="startDate" ng-model="vm.contractIsto.contract.startDate" ng-change="vm.updatePerProba(vm.contractIsto.contract.startDate)" md-min-date="vm.today" required></md-datepicker>
+                                <md-datepicker name="startDate" id="startDate" ng-model="vm.contractIsto.contract.startDate" ng-change="vm.updatePerProba(vm.contractIsto.contract.startDate)" md-min-date="vm.minStartDate" required></md-datepicker>
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
@@ -171,26 +175,21 @@
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="field-label-responsive" for="nrOre">Numar de ore lucrate pe zi</label>
-                            <input type="number" name="nrOre" class="form-control" id="nrOre" ng-model="vm.contractIsto.nrOre" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="1">
-                            <span class="text-danger" ng-show="!form.nrOre.$valid && form.nrOre.$dirty">
-                                Numar ore invalid
-                            </span>
+                            <select class="form-control" name="nrOre" id="nrOre" ng-model="vm.contractIsto.nrOre"
+                                    ng-options="item.id as item.name for item in vm.oreContract" required>
+                            </select>
                         </div>
                     </div>
                 </li>
                 <li class="list-group-item">
                     <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             <label class="field-label-responsive" for="tipContract">Tip contract</label>
-                            <select class="form-control" id="tipContract" ng-model="vm.contractIsto.tipContract" required>
-                                <option value="" disabled hidden selected>Alegeti tipul de contract</option>
-                                <option value="1">Contract Perioada Determinata</option>
-                                <option value="2">Contract Perioada Nedeterminata</option>
-                                <option value="3">Intermediar</option>
-                                <option value="4">Stagiar</option>
+                            <select class="form-control" id="tipContract" ng-model="vm.contractIsto.tipContract.id"
+                                    ng-options="item.id as item.name for item in vm.tipuriContract" required>
                             </select>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             <label class="field-label-responsive" for="periaodaProba">Sfarsit perioada de proba</label>
                             <div class="input-group">
                                 <md-datepicker name="periaodaProba" id="periaodaProba" ng-model="vm.contractIsto.perioadaProbaData" md-min-date="vm.contractIsto.contract.startDate" md-max-date="vm.maxPerProba" required></md-datepicker>
@@ -202,16 +201,14 @@
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label class="field-label-responsive" for="dept">Departament</label>
-                            <select class="form-control" id="dept" ng-model="vm.contractIsto.dept.deptId" ng-change="vm.updatePosts(vm.contractIsto.dept.deptId)"  required>
-                                <option value="" disabled hidden selected>Alegeti departamentul</option>
-                                <option ng-repeat="departament in vm.departamente" value="{{departament.deptId}}">{{departament.numeDept}}</option>
+                            <select class="form-control" id="dept" ng-model="vm.contractIsto.dept.deptId"
+                                    ng-options = "dept.deptId as dept.numeDept for dept in vm.departamente" ng-change="vm.updatePosts(vm.contractIsto.dept.deptId)"  required>
                             </select>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label class="field-label-responsive" for="post">Oras</label>
-                            <select class="form-control" id="post" ng-model="vm.contractIsto.post.id" required>
-                                <option value="" disabled hidden selected>Alegeti postul</option>
-                                <option ng-repeat="post in vm.posturi" value="{{post.id}}">{{post.name}}</option>
+                            <label class="field-label-responsive" for="post">Post</label>
+                            <select class="form-control" id="post" ng-model="vm.contractIsto.post.id"
+                                    ng-options = "post.id as post.name for post in vm.posturi" required>
                             </select>
                         </div>
                         <div class="col-md-4 mb-3">

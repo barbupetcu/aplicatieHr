@@ -3,17 +3,20 @@
         <div class="row">
             <div class="col-md-4 mb-3">
                 <i ng-if="vm.dataLoading" class="fa fa-spinner fa-spin" style="font-size:24px"></i>
-                <button class="btn btn-outline-success" ng-disabled="form.$invalid || vm.dataLoading" type="submit"><i class="fa fa-save"></i>    Adauga angajat</button>
+                <button class="btn btn-outline-success" ng-disabled="form.$invalid || vm.dataLoading" type="submit"><i class="fa fa-save"></i>    Salveaza</button>
                 <a href="#!/" class="btn btn-outline-danger" role="button"><i class="fa fa-window-close"></i>   Anuleaza</a>
         <!--        <md-select placeholder="Selectati un angajat" ng-model="vm.persoanaHeader" md-on-open="vm.loadPerson(vm.persoanaHeader)" style="min-width: 200px;" required>-->
         <!--            <md-option ng-value="angajat.marca" ng-repeat="angajat in vm.header">{{angajat.name}} {{angajat.lastName}}</md-option>-->
         <!--        </md-select>-->
             </div>
             <div class="col-md-3 mb-3">
-                <select class="form-control" id="header" ng-model="vm.persoanaHeader" ng-change="vm.loadPerson(vm.persoanaHeader)" required>
+                <select class="form-control" id="header" ng-model="vm.persoanaHeader" ng-change="vm.loadPerson(vm.persoanaHeader.marca);vm.showStatus(vm.persoanaHeader.contractActiv)"
+                        ng-options="pers as pers.name +' ' +  pers.lastName for pers in vm.header" required>
                     <option value="" disabled hidden selected>Selectati Angajatul</option>
-                    <option ng-repeat="pers in vm.header" value="{{pers.marca}}">{{pers.name}} {{pers.lastName}}</option>
                 </select>
+            </div>
+            <div class="col-md-3 mb-3">
+                <span ng-if="vm.showContractInactiv" class="text-danger">Fara contract activ!</span>
             </div>
         </div>
         <div class="card">
