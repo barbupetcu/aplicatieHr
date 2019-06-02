@@ -92,6 +92,7 @@
 
         vm.calculateAge = function calculateAge(d1){
             var months;
+            d1 = new Date(d1)
             months = (vm.today.getFullYear() - d1.getFullYear()) * 12;
             months -= d1.getMonth();
             months += vm.today.getMonth();
@@ -174,14 +175,10 @@
                         vm.updateCityAdresa(response.data.contractIsto.contract.persoana.address.countyId);
                         vm.contractIsto=response.data.contractIsto;
                         vm.calculateAge(new Date(vm.contractIsto.contract.persoana.dataNasterii));
-                        vm.contractIsto.id=null;
-                        vm.contractIsto.contract.id =null;
-                        vm.contractIsto.contract.endDate=null;
-                        vm.contratIsto.oraInceput = new Date(
-                            vm.today.getFullYear(), vm.today.getMonth(), vm.today.getDate(), 9, 0, 0);
+                        var ora = new Date(vm.contractIsto.oraInceput)
+                        vm.contractIsto.oraInceput = new Date(
+                            ora.getFullYear(), ora.getMonth(), ora.getDate(), 9, 0, 0);
                         var date = new Date(vm.contractIsto.endDate);
-                        vm.contractIsto.endDate = null;
-                        vm.contractIsto.oraInceput=null;
                         vm.contractIsto.contract.startDate = new Date(
                             date.getFullYear(), date.getMonth(), date.getDate()+1
                         )

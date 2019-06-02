@@ -1,18 +1,20 @@
 <div style="padding: 30px" ng-controller="AdaugareAngajat as vm" data-ng-init="vm.init($event)">
     <form name="form" role="form" ng-submit="vm.adaugareAngajat()">
-        <div class="col-md-4 mb-3">
-            <button class="btn btn-outline-success" type="submit"><i class="fa fa-plus"></i>    Adauga angajat</button>
-            <a href="#!/" class="btn btn-outline-danger" role="button"><i class="fa fa-window-close"></i>   Anuleaza</a>
-            <a href="#!/" class="btn btn-outline-secondary" role="button"><i class="fa fa-pause"></i>   Pauza</a>
-        </div>
-        <div ng-if="vm.reangajare" class="col-md-2 mb-3">
-            <select class="form-control" id="header" ng-model="vm.persoanaHeader" ng-change="vm.loadContract(vm.persoanaHeader.marca)"
-                    ng-options="pers as pers.name +' ' +  pers.lastName for pers in vm.header" required>
-                <option value="" disabled hidden selected>Selectati Angajatul</option>
-            </select>
-        </div>
-        <div ng-if="vm.reangajare && vm.isHeader" class="col-md-6 mb-3">
-            <span class="text-danger">Nu exista persoane in baza de date care pot fi reangajate!</span>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <button class="btn btn-outline-success" type="submit"><i class="fa fa-plus"></i>    Adauga angajat</button>
+                <a href="#!/" class="btn btn-outline-danger" role="button"><i class="fa fa-window-close"></i>   Anuleaza</a>
+                <a href="#!/" class="btn btn-outline-secondary" role="button"><i class="fa fa-pause"></i>   Pauza</a>
+            </div>
+            <div ng-if="vm.reangajare" class="col-md-2 mb-3">
+                <select class="form-control" id="header" ng-model="vm.persoanaHeader" ng-change="vm.loadContract(vm.persoanaHeader.marca)"
+                        ng-options="pers as pers.name +' ' +  pers.lastName for pers in vm.header" required>
+                    <option value="" disabled hidden selected>Selectati Angajatul</option>
+                </select>
+            </div>
+            <div ng-if="vm.reangajare && vm.isHeader" class="col-md-6 mb-3">
+                <span class="text-danger">Nu exista persoane in baza de date care pot fi reangajate!</span>
+            </div>
         </div>
         <div class="card">
             <div class="card-header">

@@ -326,3 +326,9 @@ padding-bottom: 10px;
 .md-datepicker-calendar-pane {
     z-index: 1200;
 }
+
+[ng-click],
+[data-ng-click],
+[x-ng-click] {
+    cursor: pointer;
+}

@@ -1,34 +1,34 @@
 <div class="userSettings" ng-controller="HomeController as vm">
     <div class="container userInfos">
         <div class="row">
-            <div class="col-md-3">
+            <div ng-click="vm.loadTaskuri()" class="col-md-3">
                 <div class="card-counter info">
-                <i class="fa fa-user"></i>
-                <span class="count-numbers">{{globals.currentUser.lastName}}</span>
-                <span class="count-name">{{globals.currentUser.name}}</span>
+                <i class="fas fa-tasks"></i>
+                <span class="count-numbers"></span>
+                <span class="count-name">Taskuri</span>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div ng-click="vm.loadContracteNoi()" class="col-md-3">
                 <div class="card-counter primary">
-                <i class="fa fa-trophy"></i>
+                <i class="fas fa-file-signature"></i>
                 <span class="count-numbers"></span>
-                <span class="count-name">Nivel</span>
+                <span class="count-name">Contracte noi</span>
                 </div>
             </div>
 
-            <div class="col-md-3">
+            <div ng-click="vm.loadAngajatiPlecati()" class="col-md-3">
                 <div class="card-counter danger">
-                <i class="fa fa-flash"></i>
+                <i class="fas fa-user-minus"></i>
                 <span class="count-numbers"></span>
-                <span class="count-name">pana la urmatorul nivel</span>
+                <span class="count-name">Angajati care vor pleca</span>
                 </div>
             </div>
         
-            <div class="col-md-3">
+            <div ng-click="vm.newUsers()" class="col-md-3">
                 <div class="card-counter success">
-                <i class="fa fa-database"></i>
+                <i class="fas fa-user-check"></i>
                 <span class="count-numbers"></span>
-                <span class="count-name">Punctaj total</span>
+                <span class="count-name">Utilizatori de aprobat</span>
                 </div>
             </div>
         
@@ -37,25 +37,35 @@
     </div>
 
     <div class="container">
-        <div class="row">
-            <div class="col">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <p class="h5">
-                        Taskurile mele in lucru
-                        </p>
-                        <span class="badge badge-primary badge-pill"></span>
-                    </div>
-                    <div class="list-group list-group-flush previewTasks">
-                        <div class="list-group-item list-group-item-action flex-column align-items-start">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1"></h5>
-                            </div>
-                            <p class="mb-1">Descriere: </p>
-                            <small>Proprietar: </small>
-                        </div>
-                    </div>
-                </div>
+        <div class="card teamOverview">
+            <div class="card-header no-border">
+                <h4 class="card-title">{{vm.titlu}}</h4>
+            </div>
+            <div ng-if="vm.dataLoading" class="col-md-12 mb-6" style="text-align:center; padding: 30px">
+                <i ng-if="vm.dataLoading" class="fas fa-spinner fa-pulse" style="font-size:150px"></i>
+<!--                <i ng-if="vm.dataLoading" class="fa fa-spinner fa-spin" style="font-size:200px"></i>-->
+            </div>
+            <div ng-if="!vm.dataLoading" class="card-content teamOverviewContent">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nume</th>
+                        <th scope="col">Prenume</th>
+                        <th scope="col">Departament</th>
+                        <th scope="col">Data inceput</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in vm.deptUsers">
+                        <th scope="row">{{$index+1}}</th>
+                        <td>{{item.perso.name}} {{item.perso.lastName}}</td>
+                        <td>{{item.totalPoints}}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

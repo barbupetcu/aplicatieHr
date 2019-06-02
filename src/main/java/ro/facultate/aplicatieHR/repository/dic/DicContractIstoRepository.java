@@ -11,10 +11,12 @@ import java.util.List;
 
 public interface DicContractIstoRepository extends JpaRepository<DicContracteIsto, Long> {
 
-    DicContracteIsto findFirstByContract_Persoana_MarcaOrderByDateEffDesc(Long marca);
+    List<DicContracteIsto> findByContract_Persoana_MarcaOrderByDateEffDesc(Long marca);
 
     List<Ocurente> findByContract_Persoana_Marca(Long id);
 
     DicContracteIsto findByDateEffAndContract_Persoana_Marca(Date dateEff, Long marca);
+
+
 
 }
