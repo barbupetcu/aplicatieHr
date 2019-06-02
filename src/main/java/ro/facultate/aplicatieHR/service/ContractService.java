@@ -14,6 +14,7 @@ import ro.facultate.aplicatieHR.repository.dic.DicPersoRepository;
 import ro.facultate.aplicatieHR.utils.HrException;
 
 import javax.transaction.Transactional;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +48,7 @@ public class ContractService {
         if(dicContracteIsto.getContract().getPersoana().getMarca()!=null){
             DicPerso dicPerso = dicPersoRepository.findByMarca(dicContracteIsto.getContract().getPersoana().getMarca());
             dicContracteIsto.getContract().setPersoana(dicPerso);
+
         }
         dicContracteIsto.getContract().getPersoana().setContractActiv(true);
         dicContracteIsto.setDateEff(dicContracteIsto.getContract().getStartDate());
@@ -77,9 +79,12 @@ public class ContractService {
 
     public HashMap<String, Object> getLastOccurence(Long marca){
         HashMap<String, Object> response = new HashMap<>();
-        DicContracteIsto dicContracteIsto = dicContractIstoRepository.findFirstByContract_Persoana_MarcaOrderByDateEffDesc(marca);
-        response.put("contractIsto", dicContracteIsto);
-        Long nrContract = dicContracteIsto.getContract().getId();
+        List<DicContracteIsto> toateOcurentele = dicContractIstoRepository.findByContract_Persoana_MarcaOrderByDateEffDesc(marca);
+
+        DicContracteIsto lastOccurence = toateOcurentele.stream()
+                .max(Comparator.comparing(DicContracteIsto::getDateEff)).get();
+        response.put("contractIsto", lastOccurence);
+        Long nrContract = lastOccurence.getContract().getId();
         List<Ocurente> ocurente = dicContractIstoRepository.findByContract_Persoana_Marca(marca);
 
         response.put("ocurente", ocurente);

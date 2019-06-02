@@ -5,8 +5,8 @@
         .module('app')
         .controller('InchidereContract', InchidereContract);
 
-    InchidereContract.$inject = ['UserService','FlashService','$mdDialog'];
-    function InchidereContract(UserService, FlashService, $mdDialog) {
+    InchidereContract.$inject = ['UserService','FlashService','$mdDialog', '$location'];
+    function InchidereContract(UserService, FlashService, $mdDialog, $location) {
         var vm = this;
         vm.header=[];
         vm.departamente = [];
@@ -137,7 +137,7 @@
             // Appending dialog to document.body to cover sidenav in docs app
             var confirm = $mdDialog.confirm()
                 .title('Confirmati')
-                .textContent('Sunteti sigur ca doriti sa inchdieti contractul angajatului '
+                .textContent('Sunteti sigur ca doriti sa inchideti contractul angajatului '
                     +vm.contractIsto.contract.persoana.name +' ' +vm.contractIsto.contract.persoana.lastName+' pe ' + formatDate(dataFormatata) + '?')
                 .ariaLabel('Schimbare user')
                 .targetEvent(ev)
