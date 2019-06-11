@@ -1,33 +1,33 @@
 <div class="userSettings" ng-controller="HomeController as vm">
     <div class="container userInfos">
         <div class="row">
-            <div ng-click="vm.loadTaskuri()" class="col-md-3">
+            <div ng-click="vm.loadPersonal()" class="col-md-3">
                 <div class="card-counter info">
-                <i class="fas fa-tasks"></i>
-                <span class="count-numbers"></span>
-                <span class="count-name">Taskuri</span>
+                <i class="fa fa-users"></i>
+                <span class="count-numbers">{{vm.counts.rep1}}</span>
+                <span class="count-name">Personal Activ</span>
                 </div>
             </div>
             <div ng-click="vm.loadContracteNoi()" class="col-md-3">
                 <div class="card-counter primary">
                 <i class="fas fa-file-signature"></i>
-                <span class="count-numbers"></span>
-                <span class="count-name">Contracte noi</span>
+                <span class="count-numbers">{{vm.counts.rep2}}</span>
+                <span class="count-name">Angajati noi</span>
                 </div>
             </div>
 
             <div ng-click="vm.loadAngajatiPlecati()" class="col-md-3">
                 <div class="card-counter danger">
                 <i class="fas fa-user-minus"></i>
-                <span class="count-numbers"></span>
-                <span class="count-name">Angajati care vor pleca</span>
+                <span class="count-numbers">{{vm.counts.rep3}}</span>
+                <span class="count-name">Angajati in preaviz</span>
                 </div>
             </div>
         
             <div ng-click="vm.newUsers()" class="col-md-3">
                 <div class="card-counter success">
                 <i class="fas fa-user-check"></i>
-                <span class="count-numbers"></span>
+                <span class="count-numbers">{{vm.counts.rep4}}</span>
                 <span class="count-name">Utilizatori de aprobat</span>
                 </div>
             </div>
@@ -50,19 +50,19 @@
                     <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Nume</th>
-                        <th scope="col">Prenume</th>
-                        <th scope="col">Departament</th>
-                        <th scope="col">Data inceput</th>
+                        <th scope="col">{{vm.header.col1}}</th>
+                        <th scope="col">{{vm.header.col2}}</th>
+                        <th scope="col">{{vm.header.col3}}</th>
+                        <th scope="col">{{vm.header.col4}}</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="item in vm.deptUsers">
+                    <tr ng-repeat="item in vm.table">
                         <th scope="row">{{$index+1}}</th>
-                        <td>{{item.perso.name}} {{item.perso.lastName}}</td>
-                        <td>{{item.totalPoints}}</td>
-                        <td></td>
-                        <td></td>
+                        <td>{{item.col1}}</td>
+                        <td>{{item.col2}}</td>
+                        <td>{{item.col3}}</td>
+                        <td>{{item.col4}}</td>
                     </tr>
                     </tbody>
                 </table>
