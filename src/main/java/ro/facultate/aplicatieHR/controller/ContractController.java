@@ -2,24 +2,31 @@ package ro.facultate.aplicatieHR.controller;
 
 import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ro.facultate.aplicatieHR.dto.HomeTable;
 import ro.facultate.aplicatieHR.dto.OcurentaDTO;
+import ro.facultate.aplicatieHR.entity.app.AppUser;
 import ro.facultate.aplicatieHR.entity.dic.DicContract;
 import ro.facultate.aplicatieHR.entity.dic.DicContracteIsto;
 import ro.facultate.aplicatieHR.entity.dic.DicPerso;
 import ro.facultate.aplicatieHR.projection.AngajatHeader;
+import ro.facultate.aplicatieHR.repository.app.AppUserRepository;
 import ro.facultate.aplicatieHR.service.ContractService;
 import ro.facultate.aplicatieHR.utils.HrException;
 
-import javax.servlet.http.HttpServletRequest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.time.DateTimeException;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/contract")
@@ -29,7 +36,13 @@ public class ContractController {
     @Autowired
     ContractService contractService;
     @Autowired
+    AppUserRepository appUserRepository;
+    @Autowired
     private Gson gson;
+
+    private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @RequestMapping(value = "/adaugaAngajat", method = RequestMethod.POST)
     public ResponseEntity createUser(@RequestBody DicContracteIsto dicContracteIsto) {
@@ -137,6 +150,95 @@ public class ContractController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(gson.toJson("Eroare la salvarea datelor"));
         }
     }
+
+    @RequestMapping(value = "/loadHome", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity loadHome(){
+
+        HashMap<String, Long> counts = new HashMap<>();
+        counts.put("rep1", contractService.getAngCount());
+        counts.put("rep2", contractService.getNewcontracts());
+        counts.put("rep3", contractService.getLeavingAngajati());
+        counts.put("rep4", contractService.getApprovingUsers());
+
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(counts);
+
+    }
+
+    @RequestMapping(value = "/personalActiv", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getPersonalActiv(){
+
+        List<DicContracteIsto> listaContracte = contractService.getAllAngajati();
+        List<HomeTable> result = new ArrayList<>();
+
+        for (DicContracteIsto dic : listaContracte){
+            result.add(new HomeTable(dic.getContract().getPersoana().getName()+' '+ dic.getContract().getPersoana().getLastName(),
+                    dic.getDept().getNumeDept(),
+                    dic.getPost().getName(),
+                    dateFormat.format(dic.getContract().getStartDate())
+            ));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+
+    }
+
+    @RequestMapping(value = "/contracteNoi", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getContracteNoi(){
+
+        List<DicContracteIsto> listaContracte = contractService.getContracteNoi();
+        List<HomeTable> result = new ArrayList<>();
+
+        for (DicContracteIsto dic : listaContracte){
+            result.add(new HomeTable(dic.getContract().getPersoana().getName()+' '+ dic.getContract().getPersoana().getLastName(),
+                    dic.getPost().getName(),
+                    dic.getTipContract().getName(),
+                    dateFormat.format(dic.getContract().getStartDate())
+            ));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+
+    }
+
+    @RequestMapping(value = "/leavingAngajati", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getLeavingAngajati(){
+
+        List<DicContracteIsto> listaContracte = contractService.getLeavingAng();
+        List<HomeTable> result = new ArrayList<>();
+
+        for (DicContracteIsto dic : listaContracte){
+            result.add(new HomeTable(dic.getContract().getPersoana().getName()+' '+ dic.getContract().getPersoana().getLastName(),
+                    dic.getDept().getNumeDept(),
+                    dic.getPost().getName(),
+                    dic.getContract().getEndDate() == null? "":dateFormat.format(dic.getContract().getEndDate())
+            ));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+
+    }
+
+    @RequestMapping(value = "/newUsers", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getNewUsers(){
+
+        List<DicContracteIsto> listaContracte = contractService.getNewUsers();
+        List<HomeTable> result = new ArrayList<>();
+
+        for (DicContracteIsto dic : listaContracte){
+            AppUser appUser = appUserRepository.findByMarca(dic.getContract().getPersoana().getMarca());
+            result.add(new HomeTable(dic.getContract().getPersoana().getName()+' '+ dic.getContract().getPersoana().getLastName(),
+                    appUser.getUsername(),
+                    dic.getDept().getNumeDept(),
+                    appUser.getCreateDateTime() == null? "":dateTimeFormatter.format(appUser.getCreateDateTime())
+            ));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+
+    }
+
 
 
 

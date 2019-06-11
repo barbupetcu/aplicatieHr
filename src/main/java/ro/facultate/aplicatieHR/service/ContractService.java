@@ -8,16 +8,16 @@ import ro.facultate.aplicatieHR.entity.dic.DicContracteIsto;
 import ro.facultate.aplicatieHR.entity.dic.DicPerso;
 import ro.facultate.aplicatieHR.projection.AngajatHeader;
 import ro.facultate.aplicatieHR.projection.Ocurente;
+import ro.facultate.aplicatieHR.repository.app.AppUserRepository;
 import ro.facultate.aplicatieHR.repository.dic.DicContractIstoRepository;
 import ro.facultate.aplicatieHR.repository.dic.DicContractRepository;
 import ro.facultate.aplicatieHR.repository.dic.DicPersoRepository;
 import ro.facultate.aplicatieHR.utils.HrException;
 
 import javax.transaction.Transactional;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -29,6 +29,8 @@ public class ContractService {
     DicContractIstoRepository dicContractIstoRepository;
     @Autowired
     DicContractRepository dicContractRepository;
+    @Autowired
+    AppUserRepository appUserRepository;
 
 
     public void save(DicPerso dicPerso){
@@ -45,6 +47,8 @@ public class ContractService {
         dicContracteIsto.getContract().setId(null);
         dicContracteIsto.setEndDate(null);
         dicContracteIsto.getContract().setEndDate(null);
+        dicContracteIsto.getContract().setPreaviz(false);
+        dicContracteIsto.getContract().setPreavizDate(null);
         if(dicContracteIsto.getContract().getPersoana().getMarca()!=null){
             DicPerso dicPerso = dicPersoRepository.findByMarca(dicContracteIsto.getContract().getPersoana().getMarca());
             dicContracteIsto.getContract().setPersoana(dicPerso);
@@ -122,5 +126,54 @@ public class ContractService {
         dicContractIstoRepository.save(ocurentaVeche);
 
     }
+
+    public List<DicContracteIsto> getAllAngajati(){
+        return dicContractIstoRepository.findAngajatiLastOccurence();
+    }
+
+    public long getAngCount(){
+        return dicPersoRepository.countAllByContractActiv(true);
+    }
+
+    public long getNewcontracts(){
+        LocalDate ld = LocalDate.now().minusMonths(3);
+        Date d = java.sql.Date.valueOf(ld);
+        List<DicContracteIsto> angajati = getAllAngajati();
+        return angajati.stream().filter(a -> a.getContract().getStartDate().after(d)).count();
+    }
+
+    public long getLeavingAngajati(){
+        LocalDate ld = LocalDate.now().plusMonths(3);
+        Date d = java.sql.Date.valueOf(ld);
+        List<DicContracteIsto> angajati = getAllAngajati();
+        return angajati.stream().filter(a -> a.getContract().getPreaviz() == Boolean.TRUE && a.getContract().getPreavizDate() != null && a.getContract().getPreavizDate().before(d)).count();
+
+    }
+
+    public long getApprovingUsers(){
+        return appUserRepository.countAllByEnabled(false);
+    }
+
+    public List<DicContracteIsto> getContracteNoi(){
+        LocalDate ld = LocalDate.now().minusMonths(3);
+        Date d = java.sql.Date.valueOf(ld);
+        List<DicContracteIsto> angajati = this.getAllAngajati();
+        return angajati.stream().filter(a -> a.getContract().getStartDate().after(d)).collect(Collectors.toList());
+    }
+
+    public List<DicContracteIsto> getLeavingAng(){
+        LocalDate ld = LocalDate.now().plusMonths(3);
+        Date d = java.sql.Date.valueOf(ld);
+        List<DicContracteIsto> angajati = this.getAllAngajati();
+        return angajati.stream().filter(a -> a.getContract().getPreaviz() == Boolean.TRUE && a.getContract().getPreavizDate() != null && a.getContract().getPreavizDate().before(d)).collect(Collectors.toList());
+    }
+
+    public List<DicContracteIsto> getNewUsers(){
+        List<DicContracteIsto> angajati = this.getAllAngajati();
+
+        return angajati.stream().filter(a -> appUserRepository.countAllByEnabledFalseAndMarca(a.getContract().getPersoana().getMarca()) > 0).collect(Collectors.toList());
+
+    }
+
 
 }
