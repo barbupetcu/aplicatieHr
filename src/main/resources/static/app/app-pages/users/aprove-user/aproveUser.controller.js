@@ -5,56 +5,58 @@
         .module('app')
         .controller('AproveUserController', AproveUserController);
     
-    AproveUserController.$inject = ['DataService', 'UserService', 'FlashService', '$location'];
+    AproveUserController.$inject = ['DataService', 'UserService', 'FlashService', '$location', '$http', '$timeout'];
 
-    function AproveUserController(DataService, UserService, FlashService, $location) {
+    function AproveUserController(DataService, UserService, FlashService, $location, $http,$timeout) {
         var vm = this;
         vm.user=null;
         vm.approveUser = approveUser;
         vm.deleteUser = deleteUser;
 
         (function initController() {
-            loadUser();
+            $http.get('/contract/loadApproveUser',{params: {username: DataService.getUsername()} }).then(
+                function (response) {
+                    vm.user = response.data;
+                },
+                function (error) {
+                    FlashService.Error('Eroare la incarcarea datelor!')
+                });
             
         })();
 
-        function loadUser() {
-            var param = DataService.getSelectedId();
-            UserService.GetUserById(DataService.getSelectedId())
-            .then(function (response) {
-                if (response) {
-                    vm.user=response;
-                } else {
-                    FlashService.Error(response.message);
-                }
-            });          
-        }
 
         function approveUser(){
             vm.dataAproveUser = true;
-            vm.user.enabled = true;
-            UserService.EditUser(vm.user).then(function (response) {
-                if (response.success) {
-                    FlashService.Success('Utilizatorul ' + vm.user.username + ' a fost aprobat', true);
-                    $location.path('/homeManager');
-                } else {
-                    FlashService.Error(response.message);
-                    vm.dataAproveUser=false;
-                }
-            });
+            $http.post('/contract/approveUser',JSON.stringify(vm.user)).then(
+                function (response) {
+                    FlashService.Success('Utilizatorul a fost aprobat!', true)
+                    DataService.setUsername(null);
+                    $timeout(clearLoading, 1500);
+                    $location.path('/');
+                },
+                function (error) {
+                    DataService.setUsername(null);
+                    FlashService.Error('Eroare la salvarea datelor!')
+                });
+        }
+
+        function clearLoading(){
+            vm.dataAproveUser = false;
         }
 
         function deleteUser(){
-            vm.dataDeleteUser = true;
-            UserService.DeleteUser(vm.user.id).then(function (response) {
-                if (response.success) {
-                    FlashService.Success('Utilizatorul ' + vm.user.username + ' a fost sters', true);
-                    $location.path('/homeManager');
-                } else {
-                    FlashService.Error(response.message);
-                    $location.path('/homeManager');
-                }
-            });
+            vm.dataAproveUser = true;
+            $http.post('/contract/deleteUser',JSON.stringify(vm.user)).then(
+                function (response) {
+                    FlashService.Success('Utilizatorul a fost sters!', true)
+                    DataService.setUsername(null);
+                    $timeout(clearLoading, 1500);
+                    $location.path('/');
+                },
+                function (error) {
+                    DataService.setUsername(null);
+                    FlashService.Error('Eroare la salvarea datelor!')
+                });
         }
     
     }

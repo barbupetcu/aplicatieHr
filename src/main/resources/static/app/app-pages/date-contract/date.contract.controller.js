@@ -23,6 +23,8 @@
             {id:2, name:'6 ore'},
             {id:3, name:'8 ore'}];
 
+        vm.loadContract = loadContract;
+
 
         (function initController() {
             vm.dataLoading=true;
@@ -35,21 +37,40 @@
                     }
 
                 });
-            UserService.loadHeader()
-                .then(function (response){
-                    if(response.success){
-                        vm.header=response.data;
-                    } else {
-                        FlashService.Error (response.message);
-                    }
+            loadHeader();
 
-                });
+            if (DataService.getUsername()){
+                loadContract(DataService.getUsername());
+            }
+            
+            
             vm.dataLoading=false;
             vm.showContractInactiv = false;
 
 
 
         })();
+
+        function loadHeader(){
+            UserService.loadHeader()
+                .then(function (response){
+                    if(response.success){
+                        vm.header=response.data;
+                        vm.persoanaHeader = arrayObject(vm.header, DataService.getUsername(),"marca");
+                        DataService.setUsername(null);
+                    } else {
+                        FlashService.Error (response.message);
+                    }
+
+                });
+        }
+
+        function arrayObject(myArray, searchTerm, property) {
+            for(var i = 0;  i < myArray.length; i++) {
+                if (myArray[i][property] === searchTerm) return myArray[i];
+            }
+            return null;
+        };
 
         vm.calculateAge = function calculateAge(d1){
             var months;
@@ -112,7 +133,7 @@
 
         }
 
-        vm.loadContract = function loadContract(marca){
+        function loadContract(marca){
             vm.dataLoading=true;
             UserService.loadContract(marca)
                 .then(function (response){

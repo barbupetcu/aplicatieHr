@@ -38,8 +38,18 @@
 
     <div class="container">
         <div class="card teamOverview">
-            <div class="card-header no-border">
-                <h4 class="card-title">{{vm.titlu}}</h4>
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-10">
+                        <h4 class="card-title">{{vm.titlu}}</h4>
+                    </div>
+                    <div class="col-2">
+                        <button type="button" class="btn btn-outline-success" ng-disabled="vm.dataLoading" ng-click="vm.exportRaport(vm.tipRap)">
+                            Exporta raport
+                            <i class="far fa-file-excel" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
             <div ng-if="vm.dataLoading" class="col-md-12 mb-6" style="text-align:center; padding: 30px">
                 <i ng-if="vm.dataLoading" class="fas fa-spinner fa-pulse" style="font-size:150px"></i>
@@ -57,7 +67,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="item in vm.table">
+                    <tr ng-repeat="item in vm.table" ng-click="vm.selectUserName(item.marca)">
                         <th scope="row">{{$index+1}}</th>
                         <td>{{item.col1}}</td>
                         <td>{{item.col2}}</td>

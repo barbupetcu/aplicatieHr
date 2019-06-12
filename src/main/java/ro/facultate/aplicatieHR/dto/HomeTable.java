@@ -6,6 +6,7 @@ public class HomeTable {
     private String col2;
     private String col3;
     private String col4;
+    private Long marca;
 
     public String getCol1() {
         return col1;
@@ -39,10 +40,19 @@ public class HomeTable {
         this.col4 = col4;
     }
 
-    public HomeTable(String col1, String col2, String col3, String col4) {
+    public HomeTable(String col1, String col2, String col3, String col4, Long marca) {
         this.col1 = col1;
         this.col2 = col2;
         this.col3 = col3;
         this.col4 = col4;
+        this.marca = marca;
+    }
+
+    public Long getMarca() {
+        return marca;
+    }
+
+    public void setMarca(Long marca) {
+        this.marca = marca;
     }
 }

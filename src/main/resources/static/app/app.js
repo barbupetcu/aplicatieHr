@@ -55,6 +55,9 @@
             .when('/inchidereContract', {
                 templateUrl: path + 'inchidere-contract/inchidere.contract.html'
             })
+            .when('/approveUser', {
+                templateUrl: path + 'users/aprove-user/approveUser.view.html'
+            })
             .otherwise({ redirectTo: '/login' });
     }
 

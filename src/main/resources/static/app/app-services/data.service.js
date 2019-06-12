@@ -10,6 +10,7 @@
             contractIsto : ''
         };
         var reangajare;
+        var username ='';
   
         return {
             getContractIsto: function(){
@@ -24,6 +25,13 @@
             },
             setReangajare: function(reangajare){
                 data.reangajare = reangajare;
+            },
+
+            getUsername: function(){
+                return username;
+            },
+            setUsername: function(user){
+                username = user;
             }
             
         };

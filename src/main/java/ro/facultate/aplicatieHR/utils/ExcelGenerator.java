@@ -7,8 +7,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +32,7 @@ public class ExcelGenerator {
         CellStyle headerCellStyle = workbook.createCellStyle();
         headerCellStyle.setFont(headerFont);
         addBorder(headerCellStyle);
-        headerCellStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+        headerCellStyle.setFillForegroundColor(IndexedColors.GREEN.getIndex());
         headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
         try {
@@ -74,8 +77,14 @@ public class ExcelGenerator {
                         contentCell.setCellValue(Double.parseDouble(cellValue));
                         cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("0.00"));
                     }
-                    else if(contentField.get(lista.get(j))!=null && contentField.getType().isAssignableFrom(LocalDateTime.class)){
-                        contentCell.setCellValue(Date.from(LocalDateTime.parse(cellValue).atZone(ZoneId.systemDefault()).toInstant()));
+                    else if(contentField.get(lista.get(j))!=null && contentField.getType().isAssignableFrom(Date.class)){
+                        try {
+                            contentCell.setCellValue(java.sql.Date.valueOf(LocalDate.parse(cellValue, DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.s"))));
+                        }
+                        catch (DateTimeParseException e){
+                            contentCell.setCellValue(java.sql.Date.valueOf(LocalDate.parse(cellValue, DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
+                        }
+
                         cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
                     }
                     else{

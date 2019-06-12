@@ -5,8 +5,8 @@
         .module('app')
         .controller('HomeController', HomeController);
 
-    HomeController.$inject = ['UserService', '$rootScope','$timeout','$http','FlashService'];
-    function HomeController(UserService, $rootScope,$timeout,$http,FlashService) {
+    HomeController.$inject = ['UserService', '$rootScope','$timeout','$http','FlashService', '$interval', '$q','DataService', '$location'];
+    function HomeController(UserService, $rootScope,$timeout,$http,FlashService, $interval, $q, DataService, $location) {
         var vm = this;
         vm.currentUser={};
         vm.contracteNoi = [];
@@ -44,6 +44,7 @@
             vm.header.col2 = 'Functie';
             vm.header.col3 = 'Tip Contract';
             vm.header.col4 = 'Data Inceput';
+            vm.tipRap = 2;
 
             $http.get('/contract/contracteNoi').then(
                 function (response) {
@@ -68,6 +69,7 @@
             vm.header.col2 = 'Departament';
             vm.header.col3 = 'Functie';
             vm.header.col4 = 'Data Incheiere Contract';
+            vm.tipRap = 3;
 
             $http.get('/contract/leavingAngajati').then(
                 function (response) {
@@ -88,7 +90,7 @@
             vm.header.col2 = 'Username';
             vm.header.col3 = 'Departament';
             vm.header.col4 = 'Data creari';
-
+            vm.tipRap = 4;
             $http.get('/contract/newUsers').then(
                 function (response) {
                     vm.table = response.data;
@@ -108,6 +110,7 @@
             vm.header.col2 = 'Departament';
             vm.header.col3 = 'Functie';
             vm.header.col4 = 'Data Inceput';
+            vm.tipRap = 1;
             $http.get('/contract/personalActiv').then(
                 function (response) {
                     vm.table = response.data;
@@ -122,6 +125,42 @@
 
         function clearLoading(){
             vm.dataLoading = false;
+        }
+
+        vm.exportRaport = function exportRaport(raport){
+            var deferred = $q.defer();
+            var defaultFileName='Raport.xlsx';
+
+            $http.get('/contract/exportRaport/' + raport, {responseType: "arraybuffer" }).then(
+                function (response) {
+                    var type = response.headers('Content-Type');
+                    var disposition = response.headers('Content-Disposition');
+                    if (disposition) {
+                        var match = disposition.match(/.*filename=\"?([^;\"]+)\"?.*/);
+                        if (match[1])
+                            defaultFileName = match[1];
+                    }
+                    defaultFileName = defaultFileName.replace(/[<>:"\/\\|?*]+/g, '_');
+                    var blob = new Blob([response.data], { type: type });
+                    saveAs(blob, defaultFileName);
+                    deferred.resolve(defaultFileName);
+                }, function (data, status) {
+                    var e = /* error */
+                        deferred.reject(e);
+                });
+            return deferred.promise;            
+        }
+
+        vm.selectUserName = function selectUserName(user) {
+            DataService.setUsername(user);
+
+            if (vm.tipRap == 4){
+                $location.path('/approveUser');
+            }
+            else{
+                $location.path('/dateContract');
+            }
+
         }
 
 
