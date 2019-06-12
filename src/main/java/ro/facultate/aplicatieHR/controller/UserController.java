@@ -22,6 +22,7 @@ import ro.facultate.aplicatieHR.service.UserService;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -42,9 +43,11 @@ public class UserController {
 	public ResponseEntity downloadFile1()  {
 		List<DicPerso> angajati = userService.getDicPersoAll();
 
+		List<DicPerso> angNonUser = angajati.stream().filter(a ->  userService.findByMarca(a.getMarca()) == null).collect(Collectors.toList());
+
 		Type listType = new TypeToken<List<AngajatiRegisterDTO>>(){}.getType();
 
-		List<AngajatiRegisterDTO> ang = modelMapper.map(angajati, listType);
+		List<AngajatiRegisterDTO> ang = modelMapper.map(angNonUser, listType);
 
 		if(!ang.isEmpty()){
 			return ResponseEntity.ok().body(ang);

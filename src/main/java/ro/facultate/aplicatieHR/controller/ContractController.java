@@ -5,10 +5,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ro.facultate.aplicatieHR.BO.Raport1;
+import ro.facultate.aplicatieHR.BO.Raport2;
+import ro.facultate.aplicatieHR.BO.Raport3;
+import ro.facultate.aplicatieHR.BO.Raport4;
+import ro.facultate.aplicatieHR.dto.ApproveUserDTO;
 import ro.facultate.aplicatieHR.dto.HomeTable;
 import ro.facultate.aplicatieHR.dto.OcurentaDTO;
 import ro.facultate.aplicatieHR.entity.app.AppUser;
@@ -18,11 +25,16 @@ import ro.facultate.aplicatieHR.entity.dic.DicPerso;
 import ro.facultate.aplicatieHR.projection.AngajatHeader;
 import ro.facultate.aplicatieHR.repository.app.AppUserRepository;
 import ro.facultate.aplicatieHR.service.ContractService;
+import ro.facultate.aplicatieHR.utils.ExcelGenerator;
 import ro.facultate.aplicatieHR.utils.HrException;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.DateTimeException;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -176,7 +188,8 @@ public class ContractController {
             result.add(new HomeTable(dic.getContract().getPersoana().getName()+' '+ dic.getContract().getPersoana().getLastName(),
                     dic.getDept().getNumeDept(),
                     dic.getPost().getName(),
-                    dateFormat.format(dic.getContract().getStartDate())
+                    dateFormat.format(dic.getContract().getStartDate()),
+                    dic.getContract().getPersoana().getMarca()
             ));
         }
 
@@ -194,7 +207,8 @@ public class ContractController {
             result.add(new HomeTable(dic.getContract().getPersoana().getName()+' '+ dic.getContract().getPersoana().getLastName(),
                     dic.getPost().getName(),
                     dic.getTipContract().getName(),
-                    dateFormat.format(dic.getContract().getStartDate())
+                    dateFormat.format(dic.getContract().getStartDate()),
+                    dic.getContract().getPersoana().getMarca()
             ));
         }
 
@@ -212,7 +226,8 @@ public class ContractController {
             result.add(new HomeTable(dic.getContract().getPersoana().getName()+' '+ dic.getContract().getPersoana().getLastName(),
                     dic.getDept().getNumeDept(),
                     dic.getPost().getName(),
-                    dic.getContract().getEndDate() == null? "":dateFormat.format(dic.getContract().getEndDate())
+                    dic.getContract().getEndDate() == null? "":dateFormat.format(dic.getContract().getEndDate()),
+                    dic.getContract().getPersoana().getMarca()
             ));
         }
 
@@ -231,12 +246,249 @@ public class ContractController {
             result.add(new HomeTable(dic.getContract().getPersoana().getName()+' '+ dic.getContract().getPersoana().getLastName(),
                     appUser.getUsername(),
                     dic.getDept().getNumeDept(),
-                    appUser.getCreateDateTime() == null? "":dateTimeFormatter.format(appUser.getCreateDateTime())
+                    appUser.getCreateDateTime() == null? "":dateTimeFormatter.format(appUser.getCreateDateTime()),
+                    dic.getContract().getPersoana().getMarca()
             ));
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
 
+    }
+
+    @RequestMapping(value = "/loadApproveUser", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity loadUsers(@RequestParam(name = "username") String marca){
+
+        List<DicContracteIsto> listaContracte = contractService.getNewUsers();
+
+        DicContracteIsto contract = listaContracte.stream().filter(a -> a.getContract().getPersoana().getMarca() == Long.parseLong(marca)).findFirst().orElse(null);
+
+        ApproveUserDTO approveUserDTO = new ApproveUserDTO(
+                contract.getContract().getPersoana().getName(),
+                contract.getContract().getPersoana().getLastName(),
+                appUserRepository.findByMarca(Long.parseLong(marca)).getUsername(),
+                contract.getContract().getPersoana().getEmail(),
+                contract.getDept().getNumeDept(),
+                contract.getPost().getName(),
+                contract.getContract().getPersoana().getMarca()
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(approveUserDTO);
+    }
+
+    @RequestMapping(value = "/exportRaport/{raport}", method = RequestMethod.GET)
+    public ResponseEntity getTaskReport(@PathVariable(name = "raport") String raport) throws IOException {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=Lista_Angajati.xlsx");
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(new InputStreamResource(this.getReport(raport)));
+    }
+
+    @RequestMapping(value = "/approveUser", method = RequestMethod.POST)
+    public ResponseEntity approveUser(@RequestBody ApproveUserDTO approveUserDTO) {
+
+        AppUser appUser= appUserRepository.findByMarca(approveUserDTO.getMarca());
+        appUser.setEnabled(true);
+        appUserRepository.save(appUser);
+
+        return ResponseEntity
+                .ok()
+                .body(null);
+    }
+
+    @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
+    public ResponseEntity deleteUser(@RequestBody ApproveUserDTO approveUserDTO) {
+
+        AppUser appUser= appUserRepository.findByMarca(approveUserDTO.getMarca());
+        appUserRepository.delete(appUser);
+
+        return ResponseEntity
+                .ok()
+                .body(null);
+    }
+
+    private ByteArrayInputStream getReport(String reportType) throws IOException {
+
+        ByteArrayInputStream output;
+        List<DicContracteIsto> listaContracte;
+
+        switch (reportType){
+            case "1":
+                listaContracte = contractService.getAllAngajati();
+                List<Raport1> raport1 = new ArrayList<>();
+                for (DicContracteIsto dic: listaContracte){
+                    raport1.add(new Raport1(
+                            dic.getContract().getPersoana().getMarca(),
+                            dic.getContract().getPersoana().getName(),
+                            dic.getContract().getPersoana().getLastName(),
+                            dic.getDept().getNumeDept(),
+                            dic.getPost().getName(),
+                            dic.getSalariu(),
+                            dic.getTipContract().getName(),
+                            dic.getContract().getStartDate(),
+                            dic.getDateEff())
+                    );
+                }
+                output = ExcelGenerator.createExcel(raport1, false);
+                break;
+            case "2":
+                listaContracte = contractService.getContracteNoi();
+                List<Raport2> raport2 = new ArrayList<>();
+
+                for (DicContracteIsto dic: listaContracte){
+                    LocalDate now = LocalDate.now();
+                    LocalDate startContract = dic.getContract().getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    Period period = Period.between(startContract, now);
+                    String diferenta="";
+                    if (period.getDays()>0){
+
+                        if(period.getMonths()>2){
+                            diferenta = period.getMonths() + " luni";
+                            period.minusMonths(period.getMonths());
+                            if (period.getDays()>2){
+                                diferenta+=", " +period.getDays()+" zile";
+                            }
+                            else if (period.getDays()==1){
+                                diferenta+=", 1 zi";
+                            }
+                        }
+                        else if(period.getMonths()==1){
+                            diferenta = "1 luna";
+                            period.minusMonths(period.getMonths());
+                            if (period.getDays()>2){
+                                diferenta+=", " +period.getDays()+" zile";
+                            }
+                            else if (period.getDays()==1){
+                                diferenta+=", 1 zi";
+                            }
+                        }
+                        else {
+                            if(period.getDays()>1){
+                                diferenta = period.getDays()+ " zile";
+                            }
+                            else{
+                                diferenta = "1 zi";
+                            }
+
+                        }
+                    }
+
+
+                    raport2.add(new Raport2(
+                            dic.getContract().getPersoana().getMarca(),
+                            dic.getContract().getPersoana().getName(),
+                            dic.getContract().getPersoana().getLastName(),
+                            dic.getDept().getNumeDept(),
+                            dic.getPost().getName(),
+                            dic.getSalariu(),
+                            dic.getTipContract().getName(),
+                            dic.getContract().getStartDate(),
+                            dic.getPerioadaProbaData(),
+                            diferenta
+                            )
+                    );
+                }
+                output = ExcelGenerator.createExcel(raport2, false);;
+                break;
+            case "3":
+                listaContracte = contractService.getLeavingAng();
+
+                List<Raport3> raport3 = new ArrayList<>();
+
+
+                for (DicContracteIsto dic: listaContracte){
+                    LocalDate endDate = dic.getContract().getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    LocalDate startContract = dic.getContract().getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    Period period = Period.between(startContract, endDate);
+                    String diferenta="";
+
+                    if (period.getMonths()>0){
+                        if (period.getMonths() ==1){
+                            diferenta = "1 luna";
+                        }
+                        else if (period.getMonths() < 12 ){
+                            diferenta = period.getMonths()+ " luni";
+                        }
+                        else{
+                            int months= period.getMonths();
+                            if (months%12 == 0 ){
+                                if (months / 12 ==1){
+                                    diferenta = "1 an";
+                                }
+                                else{
+                                    diferenta = period.getYears() + " ani";
+                                }
+                            }
+                            else{
+                                int luni = months%12;
+                                String luniStr ="";
+                                if (luni >1){
+                                    luniStr = months%12+" luni";
+                                    period.minusMonths(months%12);
+                                }
+                                else{
+                                    luniStr = "1 luna";
+                                    period.minusMonths(1);
+                                }
+                                String ani="";
+                                if (period.getYears()==1){
+                                    ani = "1 an";
+                                }
+                                else{
+                                    ani = period.getYears() +" ani";
+                                }
+                                diferenta = ani + " " + luniStr;
+                            }
+                        }
+                    }
+                    if(period.getMonths()<1){
+                        diferenta = period.getDays() + "zile";
+                    }
+                    else {
+                        diferenta = period.getMonths()+ "luni";
+                    }
+
+                    raport3.add(new Raport3(
+                                    dic.getContract().getPersoana().getMarca(),
+                                    dic.getContract().getPersoana().getName(),
+                                    dic.getContract().getPersoana().getLastName(),
+                                    dic.getDept().getNumeDept(),
+                                    dic.getPost().getName(),
+                                    dic.getTipContract().getName(),
+                                    dic.getContract().getStartDate(),
+                                    dic.getPerioadaProbaData(),
+                                    diferenta
+                            )
+                    );
+                }
+                output = ExcelGenerator.createExcel(raport3, false);;
+                break;
+            case "4":
+                listaContracte = contractService.getNewUsers();
+                List<Raport4> raport4 = new ArrayList<>();
+                for (DicContracteIsto dic: listaContracte){
+                    AppUser appUser = appUserRepository.findByMarca(dic.getContract().getPersoana().getMarca());
+                    Timestamp t = Timestamp.valueOf(appUser.getCreateDateTime());
+                    Date createDate = new Date(t.getTime());
+                    raport4.add(new Raport4(
+                            dic.getContract().getPersoana().getMarca(),
+                            dic.getContract().getPersoana().getName(),
+                            dic.getContract().getPersoana().getLastName(),
+                            dic.getDept().getNumeDept(),
+                            dic.getPost().getName(),
+                            dic.getContract().getStartDate(),
+                            appUser.getUsername(),
+                            createDate)
+                    );
+                }
+                output = ExcelGenerator.createExcel(raport4, false);
+                break;
+            default: output = null;
+        }
+
+        return output;
     }
 
 

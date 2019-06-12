@@ -67,7 +67,7 @@
                         <div class="col-md-4 mb-3">
                             <label class="field-label-responsive" for="judetulNasterii">Judetul Nasterii</label>
                             <select class="form-control" id="judetulNasterii" ng-model="vm.contractIsto.contract.persoana.judetulNasterii"
-                                    ng-options="item.countyId as item.countyName for item in vm.judete" ng-change="vm.updateCity(vm.persoana.judetulNasterii)" required></select>
+                                    ng-options="item.countyId as item.countyName for item in vm.judete" ng-change="vm.updateCity(vm.contractIsto.contract.persoana.judetulNasterii)" required></select>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="field-label-responsive" for="orasulNasterii">Localitatea Nasterii</label>
@@ -107,7 +107,7 @@
                         <div class="col-md-4 mb-3">
                             <label class="field-label-responsive" for="county">Judet</label>
                             <select class="form-control" id="county" ng-model="vm.contractIsto.contract.persoana.address.countyId"
-                                    ng-options="item.countyId as item.countyName for item in vm.judete" ng-change="vm.updateCityAdresa(vm.persoana.address.countyId)"  required></select>
+                                    ng-options="item.countyId as item.countyName for item in vm.judete" ng-change="vm.updateCityAdresa(vm.contractIsto.contract.persoana.address.countyId)"  required></select>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="field-label-responsive" for="city">Localitate</label>
