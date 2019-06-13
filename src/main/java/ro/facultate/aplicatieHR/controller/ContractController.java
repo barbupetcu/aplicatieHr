@@ -410,7 +410,7 @@ public class ContractController {
                     String diferenta="";
                     if (period.getDays()>0){
 
-                        if(period.getMonths()>2){
+                        if(period.getMonths()>1){
                             diferenta = period.getMonths() + " luni";
                             period.minusMonths(period.getMonths());
                             if (period.getDays()>2){
@@ -470,50 +470,23 @@ public class ContractController {
                     Period period = Period.between(startContract, endDate);
                     String diferenta="";
 
-                    if (period.getMonths()>0){
-                        if (period.getMonths() ==1){
-                            diferenta = "1 luna";
-                        }
-                        else if (period.getMonths() < 12 ){
-                            diferenta = period.getMonths()+ " luni";
-                        }
-                        else{
-                            int months= period.getMonths();
-                            if (months%12 == 0 ){
-                                if (months / 12 ==1){
-                                    diferenta = "1 an";
-                                }
-                                else{
-                                    diferenta = period.getYears() + " ani";
-                                }
-                            }
-                            else{
-                                int luni = months%12;
-                                String luniStr ="";
-                                if (luni >1){
-                                    luniStr = months%12+" luni";
-                                    period.minusMonths(months%12);
-                                }
-                                else{
-                                    luniStr = "1 luna";
-                                    period.minusMonths(1);
-                                }
-                                String ani="";
-                                if (period.getYears()==1){
-                                    ani = "1 an";
-                                }
-                                else{
-                                    ani = period.getYears() +" ani";
-                                }
-                                diferenta = ani + " " + luniStr;
-                            }
-                        }
+                    if (period.getYears() == 1){
+                        diferenta+="1 an ";
                     }
-                    if(period.getMonths()<1){
-                        diferenta = period.getDays() + " zile";
+                    else if (period.getYears()>1){
+                        diferenta+=period.getYears() + " ani ";
                     }
-                    else {
-                        diferenta = period.getMonths()+ " luni";
+                    if (period.getMonths() == 1){
+                        diferenta+="1 luna ";
+                    }
+                    else if (period.getMonths()>1){
+                        diferenta+=period.getMonths() + " luni ";
+                    }
+                    if (period.getDays() == 1){
+                        diferenta+="1 zi ";
+                    }
+                    else if (period.getDays()>1){
+                        diferenta+=period.getDays() + " zile ";
                     }
 
                     raport3.add(new Raport3(
