@@ -187,14 +187,14 @@
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label class="field-label-responsive" for="tipContract">Tip contract</label>
-                            <select class="form-control" id="tipContract" ng-model="vm.contractIsto.tipContract.id"
-                                    ng-options="item.id as item.name for item in vm.tipuriContract" required>
+                            <select class="form-control" id="tipContract" ng-model="vm.contractIsto.tipContract"
+                                    ng-options="item as item.name for item in vm.tipuriContract" required>
                             </select>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label class="field-label-responsive" for="periaodaProba">Sfarsit perioada de proba</label>
+                            <label class="field-label-responsive" for="perioadaProba">Sfarsit perioada de proba</label>
                             <div class="input-group">
-                                <md-datepicker name="periaodaProba" id="periaodaProba" ng-model="vm.contractIsto.perioadaProbaData" md-min-date="vm.contractIsto.contract.startDate" md-max-date="vm.maxPerProba" required></md-datepicker>
+                                <md-datepicker name="perioadaProba" id="perioadaProba" ng-model="vm.contractIsto.perioadaProbaData" md-min-date="vm.contractIsto.contract.startDate" md-max-date="vm.maxPerProba" required></md-datepicker>
                             </div>
                         </div>
                     </div>
@@ -209,8 +209,8 @@
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="field-label-responsive" for="post">Post</label>
-                            <select class="form-control" id="post" ng-model="vm.contractIsto.post.id"
-                                    ng-options = "post.id as post.name for post in vm.posturi" required>
+                            <select class="form-control" id="post" ng-model="vm.contractIsto.post"
+                                    ng-options = "post as post.name for post in vm.posturi" required>
                             </select>
                         </div>
                         <div class="col-md-4 mb-3">

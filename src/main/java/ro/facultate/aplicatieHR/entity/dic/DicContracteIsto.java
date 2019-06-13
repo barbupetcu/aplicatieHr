@@ -28,7 +28,7 @@ public class DicContracteIsto {
     @Column(name = "end_date")
     private Date endDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="tip_contract")
     private TipuriContracte tipContract;
 
@@ -38,11 +38,11 @@ public class DicContracteIsto {
     @Column(name = "perioada_proba_data")
     private Date perioadaProbaData;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="dept")
     private Dept dept;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="post")
     private Posturi post;
 

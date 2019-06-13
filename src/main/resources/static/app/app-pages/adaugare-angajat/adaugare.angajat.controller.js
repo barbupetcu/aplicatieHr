@@ -5,8 +5,8 @@
         .module('app')
         .controller('AdaugareAngajat', AdaugareAngajat);
 
-    AdaugareAngajat.$inject = ['UserService','FlashService','$location', 'DataService','$mdDialog'];
-    function AdaugareAngajat(UserService, FlashService, $location, DataService, $mdDialog) {
+    AdaugareAngajat.$inject = ['UserService','FlashService','$location', 'DataService','$mdDialog','$interval', '$q','$http'];
+    function AdaugareAngajat(UserService, FlashService, $location, DataService, $mdDialog,$interval, $q,$http) {
         var vm = this;
         vm.today = new Date();
         vm.maxPerProba = new Date(vm.today.getFullYear(), vm.today.getMonth() + 3, vm.today.getDate());
@@ -149,15 +149,32 @@
 
 
         vm.adaugareAngajat = function adaugareAngajat(){
-            UserService.adaugaAngajat(vm.contractIsto)
-                .then(function (response){
-                    if(response.success){
-                        FlashService.Success (response.data, true);
-                        $location.path('/');
-                    } else {
-                        FlashService.Error (response.message);
+            var deferred = $q.defer();
+            var defaultFileName='Contract.docx';
+
+            $http.post('/contract/adaugaAngajat', JSON.stringify(vm.contractIsto),{responseType: "arraybuffer" }).then(
+                function (response) {
+                    var type = response.headers('Content-Type');
+                    var disposition = response.headers('Content-Disposition');
+                    if (disposition) {
+                        var match = disposition.match(/.*filename=\"?([^;\"]+)\"?.*/);
+                        if (match[1])
+                            defaultFileName = match[1];
                     }
+                    defaultFileName = defaultFileName.replace(/[<>:"\/\\|?*]+/g, '_');
+                    var blob = new Blob([response.data], { type: type });
+                    saveAs(blob, defaultFileName);
+                    deferred.resolve(defaultFileName);
+                    FlashService.Success ('Datele au fost salvate', true);
+                    $location.path('/');
+                }, function (data, status) {
+                    FlashService.Error (data);
+                    var e = /* error */
+                        deferred.reject(e);
                 });
+            return deferred.promise;
+
+
         }
 
         vm.updatePerProba = function updatePerProba(data){

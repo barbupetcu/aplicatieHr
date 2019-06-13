@@ -11,10 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ro.facultate.aplicatieHR.BO.Raport1;
-import ro.facultate.aplicatieHR.BO.Raport2;
-import ro.facultate.aplicatieHR.BO.Raport3;
-import ro.facultate.aplicatieHR.BO.Raport4;
+import ro.facultate.aplicatieHR.BO.*;
+import ro.facultate.aplicatieHR.dto.AdeverintaDTO;
 import ro.facultate.aplicatieHR.dto.ApproveUserDTO;
 import ro.facultate.aplicatieHR.dto.HomeTable;
 import ro.facultate.aplicatieHR.dto.OcurentaDTO;
@@ -25,12 +23,14 @@ import ro.facultate.aplicatieHR.entity.dic.DicPerso;
 import ro.facultate.aplicatieHR.projection.AngajatHeader;
 import ro.facultate.aplicatieHR.repository.app.AppUserRepository;
 import ro.facultate.aplicatieHR.service.ContractService;
+import ro.facultate.aplicatieHR.service.DataService;
 import ro.facultate.aplicatieHR.utils.ExcelGenerator;
 import ro.facultate.aplicatieHR.utils.HrException;
+import ro.facultate.aplicatieHR.utils.WordGenerator;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.sql.Date;
+import java.util.Date;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -50,17 +50,48 @@ public class ContractController {
     @Autowired
     AppUserRepository appUserRepository;
     @Autowired
+    DataService dataService;
+    @Autowired
     private Gson gson;
+    @Autowired
+    private WordGenerator wordGenerator;
 
     private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @RequestMapping(value = "/adaugaAngajat", method = RequestMethod.POST)
-    public ResponseEntity createUser(@RequestBody DicContracteIsto dicContracteIsto) {
+    public ResponseEntity createUser(@RequestBody DicContracteIsto dto) {
         try{
-            contractService.createContract(dicContracteIsto);
-            return ResponseEntity.status(HttpStatus.OK).body(gson.toJson("Datele au fost salvate"));
+            dto = contractService.createContract(dto);
+
+            DicContracteIsto dic = contractService.getContract(dto.getId());
+
+            ContractDoc contractDoc = new ContractDoc(
+                    dic.getContract().getId().toString(),
+                    dateFormat.format(new Date()),
+                    dic.getContract().getPersoana().getName() + " "+ dic.getContract().getPersoana().getLastName(),
+                    dataService.getOras(dic.getContract().getPersoana().getAddress().getCountyId(), dic.getContract().getPersoana().getAddress().getCityId()),
+                    dic.getContract().getPersoana().getAddress().getStreet(),
+                    dic.getContract().getPersoana().getAddress().getStreetNo(),
+                    dataService.getJudet(dic.getContract().getPersoana().getAddress().getCountyId()),
+                    dic.getTipContract().getName(),
+                    dateFormat.format(dic.getContract().getStartDate()),
+                    dic.getContract().getEndDate()!=null? dateFormat.format(dic.getContract().getEndDate()):"",
+                    dic.getPost().getName(),
+                    dic.getContract().getPersoana().getCnp().toString()
+            );
+            ByteArrayInputStream bt =wordGenerator.generateDocument(contractDoc, "contract");
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Disposition",
+                    "attachment; filename=Contract_"+
+                            dic.getContract().getPersoana().getName()+"_"+ dic.getContract().getPersoana().getLastName() +".docx");
+            return ResponseEntity
+                    .ok()
+                    .headers(headers)
+                    .body(new InputStreamResource(bt));
+
         }
         catch (Exception e){
             logger.error(e);
@@ -285,6 +316,41 @@ public class ContractController {
                 .headers(headers)
                 .body(new InputStreamResource(this.getReport(raport)));
     }
+
+    @RequestMapping(value = "/eliberareAdeverinta", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getAdeverinta(@RequestBody AdeverintaDTO adeverintaDTO) throws IOException {
+
+        DicContracteIsto dic = contractService.getLastContract(Long.parseLong(adeverintaDTO.getMarca()));
+
+        AdeverintaDoc adeverintaDoc = new AdeverintaDoc(
+                dic.getContract().getPersoana().getName() + ' '+ dic.getContract().getPersoana().getLastName(),
+                dic.getContract().getPersoana().getCnp().toString(),
+                dataService.getOras(dic.getContract().getPersoana().getAddress().getCountyId(), dic.getContract().getPersoana().getAddress().getCityId()),
+                dic.getContract().getPersoana().getAddress().getStreet(),
+                dic.getContract().getPersoana().getAddress().getStreetNo(),
+                dataService.getJudet(dic.getContract().getPersoana().getAddress().getCountyId()),
+                dic.getPost().getName(),
+                dic.getContract().getStartDate() == null? "":dateFormat.format(dic.getContract().getStartDate()),
+                adeverintaDTO.getMotiv(),
+                dic.getSalariu().toString()
+
+        );
+
+        ByteArrayInputStream output =  wordGenerator.generateDocument(adeverintaDoc, adeverintaDTO.getTip());
+
+
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition",
+                "attachment; filename=Adeverinta_"+dic.getContract().getPersoana().getName()+"_"+
+                        dic.getContract().getPersoana().getLastName()+".docx");
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(new InputStreamResource(output));
+    }
+
+
 
     @RequestMapping(value = "/approveUser", method = RequestMethod.POST)
     public ResponseEntity approveUser(@RequestBody ApproveUserDTO approveUserDTO) {
