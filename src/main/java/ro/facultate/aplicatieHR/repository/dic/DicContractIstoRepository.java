@@ -23,4 +23,9 @@ public interface DicContractIstoRepository extends JpaRepository<DicContracteIst
             "group by a.contract.persoana.marca")
     List<DicContracteIsto> findAngajatiLastOccurence();
 
+    @Query("select a from DicContracteIsto a " +
+            "where a.contract.persoana.contractActiv = false and a.dateEff = (select max (b.dateEff) from DicContracteIsto b where a.contract.persoana.marca=b.contract.persoana.marca) " +
+            "group by a.contract.persoana.marca")
+    List<DicContracteIsto> findAllAngajatiInactive();
+
 }

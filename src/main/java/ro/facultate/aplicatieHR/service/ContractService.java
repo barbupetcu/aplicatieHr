@@ -139,6 +139,12 @@ public class ContractService {
     public List<DicContracteIsto> getAllAngajati(){
         return dicContractIstoRepository.findAngajatiLastOccurence();
     }
+    public List<DicContracteIsto> getAllAngajatiInactive(){
+        return dicContractIstoRepository.findAllAngajatiInactive();
+    }
+
+
+
 
     public long getAngCount(){
         return dicPersoRepository.countAllByContractActiv(true);
@@ -154,7 +160,7 @@ public class ContractService {
     public long getLeavingAngajati(){
         LocalDate ld = LocalDate.now().plusMonths(3);
         Date d = java.sql.Date.valueOf(ld);
-        List<DicContracteIsto> angajati = getAllAngajati();
+        List<DicContracteIsto> angajati = getAllAngajatiInactive();
         return angajati.stream().filter(a -> a.getContract().getPreaviz() == Boolean.TRUE && a.getContract().getPreavizDate() != null && a.getContract().getPreavizDate().before(d)).count();
 
     }
@@ -173,7 +179,7 @@ public class ContractService {
     public List<DicContracteIsto> getLeavingAng(){
         LocalDate ld = LocalDate.now().plusMonths(3);
         Date d = java.sql.Date.valueOf(ld);
-        List<DicContracteIsto> angajati = this.getAllAngajati();
+        List<DicContracteIsto> angajati = this.getAllAngajatiInactive();
         return angajati.stream().filter(a -> a.getContract().getPreaviz() == Boolean.TRUE && a.getContract().getPreavizDate() != null && a.getContract().getPreavizDate().before(d)).collect(Collectors.toList());
     }
 
