@@ -41,7 +41,7 @@ public class ContractService {
         dicContractIstoRepository.save(dicContracteIsto);
     }
 
-    public void createContract(DicContracteIsto dicContracteIsto){
+    public DicContracteIsto createContract(DicContracteIsto dicContracteIsto){
 
         dicContracteIsto.setId(null);
         dicContracteIsto.getContract().setId(null);
@@ -56,7 +56,7 @@ public class ContractService {
         }
         dicContracteIsto.getContract().getPersoana().setContractActiv(true);
         dicContracteIsto.setDateEff(dicContracteIsto.getContract().getStartDate());
-        dicContractIstoRepository.save(dicContracteIsto);
+        return dicContractIstoRepository.saveAndFlush(dicContracteIsto);
     }
 
     public void closeContract(DicContracteIsto dicContracteIsto){
@@ -93,6 +93,15 @@ public class ContractService {
 
         response.put("ocurente", ocurente);
         return response;
+    }
+
+    public DicContracteIsto getLastContract(Long marca){
+        List<DicContracteIsto> toateOcurentele = dicContractIstoRepository.findByContract_Persoana_MarcaOrderByDateEffDesc(marca);
+
+        DicContracteIsto lastOccurence = toateOcurentele.stream()
+                .max(Comparator.comparing(DicContracteIsto::getDateEff)).get();
+
+        return lastOccurence;
     }
 
     public DicContracteIsto getOccurence(Date dateEff, Long marca){
@@ -173,6 +182,10 @@ public class ContractService {
 
         return angajati.stream().filter(a -> appUserRepository.countAllByEnabledFalseAndMarca(a.getContract().getPersoana().getMarca()) > 0).collect(Collectors.toList());
 
+    }
+
+    public DicContracteIsto getContract(Long id){
+        return dicContractIstoRepository.findById(id).get();
     }
 
 

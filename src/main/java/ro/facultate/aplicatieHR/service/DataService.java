@@ -61,4 +61,12 @@ public class DataService {
     public List<Orase> getAllOraseByJudet(Integer id){
         return  sirutaRepository.findByCountyIdOrderByCityName(id);
     }
+
+    public String getOras(Integer countyId, Integer id){
+        return sirutaRepository.findFirstByCountyIdAndId(countyId, Long.parseLong(id.toString())).getCityName();
+    }
+
+    public String getJudet(Integer countyId){
+        return sirutaRepository.findFirstByCountyId(countyId).getCountyName();
+    }
 }

@@ -1,0 +1,47 @@
+<div class="container" ng-controller="AdeverinteController as vm">
+    <div class="col-md-6 offset-md-3" style="padding-top:20px" style="padding-bottom:20px">
+        <div class="card">
+            <div class="card-header">
+                <div class="input-group-append">
+                    <span class="input-group-text"><i class="fa fa-certificate"></i></i></span>
+                    <span class="input-group-text">Eliberare Adeverinte</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <form name="form" role="form" ng-submit="vm.creazaAdeverinta()">
+                    <div ng-if="!vm.dataLoading" class="form-group">
+                        <label for="header">Selectati Angajatul</label>
+                        <select class="form-control" id="header" ng-model="vm.adev.marca"
+                                ng-options="pers.marca as pers.name +' ' +  pers.lastName for pers in vm.header" required>
+                            <option value="" disabled hidden selected>.....</option>
+                        </select>
+                    </div>
+                    <div ng-if="!vm.dataLoading" class="form-group">
+                        <label for="adeverinta">Selectati tipul adeverintei</label>
+                        <select class="form-control" id="adeverinta" ng-model="vm.adev.tip"
+                                ng-options="adev.id as adev.name for adev in vm.adeverinte" required>
+                            <option value="" disabled hidden selected>.....</option>
+                        </select>
+                    </div>
+                    <div ng-if="!vm.dataLoading" class="form-group">
+                        <label for="motiv">Motivul eliberarii adeverintei</label>
+                        <input type="text" name="motiv" id="motiv" class="form-control" id="strada" ng-model="vm.adev.motiv" required>
+                    </div>
+
+                    <div ng-if="vm.dataLoading" class="col-md-12 mb-6" style="text-align:center; padding: 30px">
+                        <i ng-if="vm.dataLoading" class="fas fa-spinner fa-pulse" style="font-size:150px"></i>
+                    </div>
+
+                    <div class="form-actions" style="padding-bottom: 20px">
+                        <button type="submit" class="btn btn-primary" ng-disabled="vm.dataLoading">
+                            Exporta adeverinta <i class="far fa-file-word"></i>
+                        </button>
+                        <button type="submit" class="btn btn-danger" ng-click="vm.cancelAdeverinta()" ng-disabled="vm.dataLoading">
+                            Cancel <i class="fas fa-ban"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

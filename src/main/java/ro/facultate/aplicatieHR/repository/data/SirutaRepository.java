@@ -11,4 +11,8 @@ public interface SirutaRepository extends JpaRepository<Siruta, Integer> {
 
     List<Judete> findDistinctByOrderByCountyName();
     List<Orase> findByCountyIdOrderByCityName(Integer countyId);
+
+    Siruta findFirstByCountyIdAndId(Integer countyId, Long id);
+
+    Siruta findFirstByCountyId(Integer countyId);
 }
