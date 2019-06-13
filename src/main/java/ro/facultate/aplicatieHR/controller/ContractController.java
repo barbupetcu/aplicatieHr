@@ -465,7 +465,7 @@ public class ContractController {
 
 
                 for (DicContracteIsto dic: listaContracte){
-                    LocalDate endDate = dic.getContract().getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    LocalDate endDate = dic.getContract().getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                     LocalDate startContract = dic.getContract().getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                     Period period = Period.between(startContract, endDate);
                     String diferenta="";
@@ -510,10 +510,10 @@ public class ContractController {
                         }
                     }
                     if(period.getMonths()<1){
-                        diferenta = period.getDays() + "zile";
+                        diferenta = period.getDays() + " zile";
                     }
                     else {
-                        diferenta = period.getMonths()+ "luni";
+                        diferenta = period.getMonths()+ " luni";
                     }
 
                     raport3.add(new Raport3(
@@ -524,7 +524,7 @@ public class ContractController {
                                     dic.getPost().getName(),
                                     dic.getTipContract().getName(),
                                     dic.getContract().getStartDate(),
-                                    dic.getPerioadaProbaData(),
+                                    dic.getContract().getEndDate(),
                                     diferenta
                             )
                     );
